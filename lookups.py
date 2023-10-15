@@ -40,11 +40,11 @@ class DESTINATION_SCHEMA(Enum):
     DESTINATION_NAME = "premier_league"
 
 class brands_url(Enum):
-   samsung="https://www.gsmarena.com/samsung-phones-9.php"
-   oneplus="https://www.gsmarena.com/oneplus-phones-95.php"
-   apple="https://www.gsmarena.com/apple-phones-48.php"
-   xiaomi="https://www.gsmarena.com/xiaomi-phones-80.php"
-   huwawei="https://www.gsmarena.com/huawei-phones-58.php"
+   #samsung="https://www.gsmarena.com/samsung-phones-f-9-0-r1-p1.php"
+   apple="https://www.gsmarena.com/apple-phones-f-48-0-r1-p1.php"
+   #oneplus="https://www.gsmarena.com/oneplus-phones-f-95-0-r1-p1.php"
+   #xiaomi="https://www.gsmarena.com/xiaomi-phones-f-80-0-r1-p1.php"
+   #huwawei="https://www.gsmarena.com/huawei-phones-f-58-0-r1-p1.php"
 
 
 class page_limit(Enum):

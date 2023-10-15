@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import praw
 from lookups import brands_url,page_limit
@@ -481,22 +481,22 @@ def return_stg_specs_df(driver):
         #return product_links
         product_urls=[]
         try:
-            for product_link in product_links:
+            for product_link in product_links[:1]:
                 # Get the URL for the product page
                 product_url = product_link.get_attribute('href')
                 product_urls.append(product_url)
-            page_numbers = driver.find_elements(By.CSS_SELECTOR, 'div.nav-pages a')
-            pages=[]
-            for page_number in page_numbers[:page_limit[brand_link.name].value]:
-                page_url = page_number.get_attribute('href')
-                print(page_url)
-                pages.append(page_url)
-            for page in pages:
-                driver.get(page)
-                sleep(2)  # Adjust sleep time if needed
-                product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
-                phone_urls = [product_link.get_attribute('href') for product_link in product_links]
-                product_urls.extend(phone_urls)
+            # page_numbers = driver.find_elements(By.CSS_SELECTOR, 'div.nav-pages a')
+            # pages=[]
+            # for page_number in page_numbers[:page_limit[brand_link.name].value]:
+            #     page_url = page_number.get_attribute('href')
+            #     print(page_url)
+            #     pages.append(page_url)
+            # for page in pages:
+            #     driver.get(page)
+            #     sleep(2)  # Adjust sleep time if needed
+            #     product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
+            #     phone_urls = [product_link.get_attribute('href') for product_link in product_links]
+            #     product_urls.extend(phone_urls)
             for product_link in product_urls:
                 print(f"Extracting data for product:({product_urls})")
                 # sleep(1)
@@ -512,6 +512,60 @@ def return_stg_specs_df(driver):
     driver.quit()
 
     return all_results,all_reviews
+
+
+def return_stg_specs_exception_df(driver):
+    all_results = pd.DataFrame()
+    all_reviews = pd.DataFrame()
+
+    for brand_link in brands_url:
+        # driver = webdriver.Chrome()
+        # options=Options()
+        # options.add_argument('--headless')
+        # driver = webdriver.Chrome(options=options)
+        print(f"Extracting data for brand: ({brand_link.name})")
+
+        # Initialize a variable for the number of retries
+        max_retries = 3
+        for retry in range(max_retries):
+            try:
+                driver.get(brand_link.value)
+                break  # Exit the loop if the operation succeeds
+            except WebDriverException:
+                if retry == max_retries - 1:
+                    # Handle the WebDriverException after maximum retries
+                    print("WebDriverException: Maximum retries reached.")
+                    return all_results, all_reviews
+                else:
+                    print(f"WebDriverException: Retrying... (Retry {retry + 1})")
+                    sleep(2)  # Add a delay before retry
+
+        product_urls = []  # Create an empty list to store product URLs
+        try:
+            # Extract product URLs for the current brand
+            product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
+            for product_link in product_links:
+                product_url = product_link.get_attribute('href')
+                product_urls.append(product_url)
+
+            # Iterate through product URLs
+            for product_url in product_urls[5:16]:
+                print(f"Extracting data for product: ({product_url})")
+                product_data = return_specs_df(product_url, driver)
+                product_reviews = extract_all_reviews(product_url, driver)
+                all_results = pd.concat([all_results, product_data], axis=0, ignore_index=True)
+                all_reviews = pd.concat([all_reviews, product_reviews], axis=0, ignore_index=True)
+        
+        except:
+            # driver.quit()
+            continue  # Handle any exceptions and continue to the next brand
+            
+        # driver.quit()
+    driver.quit()
+
+    return all_results, all_reviews
+
+
 
 
 
