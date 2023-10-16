@@ -26,6 +26,7 @@ def clean_reviews_reddit(df):
 
 def clean_reviews_gsm(df):
     return_df=df.copy()
+    return_df.drop_duplicates(inplace=True)
     return_df.drop(columns='User location', inplace=True)
     return_df.columns=return_df.columns.str.replace(" ","_")
     return_df['Date']=return_df['Date'].apply(replace_date)
