@@ -33,11 +33,11 @@ class IncrementalField(Enum):
     ACTOR = "actor_last_update"
 
 class ETLStep(Enum):
-    PRE_HOOK = 0
-    HOOK = 1
+    PRE_HOOK = "prehook"
+    HOOK = "hook"
 
 class DESTINATION_SCHEMA(Enum):
-    DESTINATION_NAME = "premier_league"
+    DESTINATION_NAME = "product_analyzer"
 
 class brands_url(Enum):
    #samsung="https://www.gsmarena.com/samsung-phones-f-9-0-r1-p1.php"
@@ -54,5 +54,12 @@ class page_limit(Enum):
     apple=2
     google=1
     oneplus=2
+
+
+class first_time(Enum):
+    reddit_reviews='Iphone 14'
+    gsm_reviews='https://www.gsmarena.com/apple_iphone_14-reviews-11861p1.php'
+    specs_url='https://www.gsmarena.com/apple_iphone_14-11861.php'
+
 
 

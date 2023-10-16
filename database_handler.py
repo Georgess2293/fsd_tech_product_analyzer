@@ -2,17 +2,17 @@ import psycopg2
 from lookups import ErrorHandling, InputTypes, DESTINATION_SCHEMA
 from logging_handler import show_error_message
 import pandas as pd
-import pickle
+
 
 # Load the db_pass variable back from the file using pickle.load
-with open('db_pass.pkl', 'rb') as file:
-    db_pass = pickle.load(file)
+# with open('db_pass.pkl', 'rb') as file:
+#     db_pass = pickle.load(file)
 
 config_dict = {
     "host"      : "localhost",
-    "database"  : "PremierLeague",
+    "database"  : "ProductAnalyzer",
     "user"      : "postgres",
-    "password"  : db_pass
+    "password"  : "admin"
 }
 
 def create_connection():

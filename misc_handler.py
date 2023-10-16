@@ -1,4 +1,5 @@
 import requests
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -12,6 +13,9 @@ from lookups import brands_url,page_limit
 from time import sleep
 from datetime import datetime
 import pandas as pd
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from textblob import TextBlob
 
 
 
@@ -24,7 +28,7 @@ def return_specs_df(url,driver):
     product_id=url.split('-')[1].split('.')[0]
     list_df=pd.read_html(driver.page_source)
     return_df = pd.concat(list_df, ignore_index=True)
-    return_df=return_df[:76]
+    return_df=return_df[:75]
     return_df[1] = return_df[0] + '_' + return_df[1]
     return_df=return_df.dropna(subset=1)
     return_df.reset_index()
@@ -565,6 +569,59 @@ def return_stg_specs_exception_df(driver):
 
     return all_results, all_reviews
 
+
+def sentiment_analysis(review_text):
+    text_blob = TextBlob(review_text)
+
+# Perform sentiment analysis
+    polarity = text_blob.sentiment.polarity  # Polarity ranges from -1 (negative) to 1 (positive)
+    subjectivity = text_blob.sentiment.subjectivity  # Subjectivity ranges from 0 (objective) to 1 (subjective)
+
+# Determine sentiment based on polarity
+    if polarity > 0:
+        sentiment = "Positive"
+    elif polarity < 0:
+        sentiment = "Negative"
+    else:
+        sentiment = "Neutral"   
+    return sentiment
+
+
+
+def ntlk_sentiment_analysis(review,analyzer):
+# Initialize the VADER sentiment intensity analyzer
+    # nltk.download("vader_lexicon")
+    #analyzer = SentimentIntensityAnalyzer()
+
+    # Example sentences for sentiment analysis
+  
+
+    # Perform sentiment analysis on each sentence
+
+    sentiment_scores = analyzer.polarity_scores(review)
+    compound_score = sentiment_scores["compound"]
+
+    if compound_score >= 0.05:
+        sentiment = "Positive"
+    elif compound_score <= -0.05:
+        sentiment = "Negative"
+    else:
+        sentiment = "Neutral"
+    return sentiment
+
+def sentiment_analysis_df(df):
+    nltk.download("vader_lexicon")
+    analyzer = SentimentIntensityAnalyzer()
+    return_df=df.copy()
+    return_df['Sentiment_textblob']=df['Review_Text'].apply(lambda x:sentiment_analysis(x))
+    return_df['Sentiment_nltk']=df['Review_Text'].apply(lambda x:ntlk_sentiment_analysis(x,analyzer))
+    return return_df
+
+
+def retreive_sql_files(sql_command_directory_path):
+    sql_files = [sqlfile for sqlfile in os.listdir(sql_command_directory_path) if sqlfile.endswith('.sql')]
+    sorted_sql_files =  sorted(sql_files)
+    return sorted_sql_files
 
 
 
