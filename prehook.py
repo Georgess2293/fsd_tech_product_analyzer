@@ -63,7 +63,14 @@ def create_sql_staging_tables_gsm_reviews(db_session, driver):
 
 def create_sql_staging_tables_specs(db_session, driver):
     try:
-        staging_specs=misc_handler.return_specs_df(first_time.specs_url.value,driver)
+        columns=['product_id','brand','model','Network_Technology','Network_2G bands','Network_3G bands','Network_4G bands','Network_5G bands',
+                'Network_Speed','Launch_Announced','Launch_Status','Body_Dimensions','Body_Weight','Body_Build','Body_SIM','Display_Type','Display_Size','Display_Resolution',
+                'Display_Protection','Platform_OS','Platform_Chipset','Platform_CPU','Platform_GPU','Memory_Card slot','Memory_Internal','Main Camera_Triple',
+                'Main Camera_Features','Main Camera_Video','Selfie camera_Single','Selfie camera_Features','Selfie camera_Video','Sound_Loudspeaker','Sound_3.5mm jack',
+                'Comms_WLAN','Comms_Bluetooth','Comms_Positioning','Comms_NFC','Comms_Radio','Comms_USB','Features_Sensors','Battery_Type','Battery_Charging',
+                'Misc_Colors','Misc_Models','Misc_SAR','Main Camera_Quad','Misc_SAR EU','Main Camera_Dual','Comms_Infrared port','Misc_Price','Selfie camera_Dual','Main Camera_Single']
+        staging_specs = pd.DataFrame(columns=columns)
+        #staging_specs=misc_handler.return_specs_df(first_time.specs_url.value,driver)
         staging_specs=clean_specs(staging_specs)
         dst_table = f"stg_products_specs"
         create_stmt = return_create_statement_from_df(staging_specs,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)

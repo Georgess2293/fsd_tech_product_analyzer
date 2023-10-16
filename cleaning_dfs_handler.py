@@ -15,6 +15,8 @@ def replace_date(x):
 
 def clean_reviews_reddit(df):
     return_df=df.copy()
+    if return_df.columns[0]=='Unnamed: 0': 
+        return_df.pop(return_df.columns[0])
     return_df.columns=return_df.columns.str.replace(" ","_")
     return_df['Date']=pd.to_datetime(return_df['Date'])
     # columns=['product_id']
