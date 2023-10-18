@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import praw
-from lookups import brands_url,page_limit
+from lookups import brands_url,page_limit,product_url
 from time import sleep
 from datetime import datetime
 import pandas as pd
@@ -624,6 +624,102 @@ def retreive_sql_files(sql_command_directory_path):
     return sorted_sql_files
 
 
+def return_prices_df(url,driver):
+    return_df=pd.DataFrame()
+    driver.get(url)
+    product_id=url.split('-')[1].split('.')[0]
+    return_df.insert(0,'product_id',product_id)   
+    try:
+        list_df=pd.read_html(driver.page_source)
+        result_df = pd.concat(list_df, ignore_index=True)
+        result=result_df.iloc[-3:].T
+        result.columns=result.iloc[0]
+        data_row=result.iloc[1]
+        return_df=pd.DataFrame([data_row])
+        return_df.insert(0,'product_id',product_id)   
+    except:
+        pass
+    finally:
+        return return_df
+
+
+def return_all_prices_df(driver,product_urls):
+      all_results = pd.DataFrame()
+      for product_url in product_urls:
+            try:
+                driver.get(product_url)
+                print(f"Extracting data for product: ({product_url})")
+                product_data = return_prices_df(product_url,driver)
+                all_results = pd.concat([all_results, product_data], axis=0, ignore_index=True)
+            except:
+                continue
+      driver.quit()
+      return all_results
+
+def return_tables_from_url(driver):
+    # all_specs = pd.DataFrame()
+    #all_reviews = pd.DataFrame()
+    all_prices = pd.DataFrame()
+    for product in product_url:
+            try:
+                driver.get(product.value)
+                # print(f"Extracting data for product: ({product.value})")
+                # product_specs = return_specs_df(product.value, driver)
+                #product_reviews = extract_all_reviews(product.value,driver)
+                product_prices = return_prices_df(product.value,driver)
+                # all_specs = pd.concat([all_specs, product_specs], axis=0, ignore_index=True)
+                #all_reviews = pd.concat([all_reviews, product_reviews], axis=0, ignore_index=True)
+                all_prices = pd.concat([all_prices, product_prices], axis=0, ignore_index=True)
+            except:
+                continue
+    driver.quit()
+    return all_prices
+
+
+def return_tables_reviews_from_url(driver):
+    all_reviews = pd.DataFrame()
+    for product in product_url:
+            try:
+                driver.get(product.value)
+                print(f"Extracting data for product: ({product.value})")
+                product_reviews = extract_all_reviews(product.value,driver)
+                all_reviews = pd.concat([all_reviews, product_reviews], axis=0, ignore_index=True)
+                
+            except:
+                continue
+    driver.quit()
+    return all_reviews
+
+def convert_currency(currency_value):
+    exchange_rates = {
+        '€': 1.06,  
+        '₹': 0.012,  
+        '$':1,
+        '£':1.22 
+    }
+
+    if not pd.notna(currency_value):
+        return None
+
+    # Extract the currency symbol
+    currency_symbol = currency_value[0]
+
+    # Remove the currency symbol, commas, and spaces, then convert to float
+    amount = float(currency_value[1:].replace(',', '').strip())
+
+    # Convert to USD using the exchange rate
+    usd_amount = amount * exchange_rates.get(currency_symbol, 1.0)
+    return usd_amount
+
+def convert_currency_df(df):
+    return_df=df.copy()
+    for column in return_df.columns:
+        if column != 'product_id':
+            return_df[column] = return_df[column].apply(convert_currency)
+    return return_df
+
+    
+     
 
 
 

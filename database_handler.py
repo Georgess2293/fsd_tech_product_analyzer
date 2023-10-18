@@ -112,6 +112,13 @@ def return_insert_into_sql_statement_from_df(dataframe, table_name, schema_name=
                 elif isinstance(val, (str)):
                     val_escaped = val.replace("'", "''")
                     value_strs.append(f"'{val_escaped}'")
+                elif isinstance(val, int):
+                    value_strs.append(str(val))
+                elif isinstance(val, float):
+                    if val.is_integer():
+                        value_strs.append(str(int(val)))  # Format as integer if it's a whole number
+                    else:
+                        value_strs.append(str(val))  # Keep it as a float
                 else:
                     value_strs.append(f"'{val}'")
             values = ', '.join(value_strs)

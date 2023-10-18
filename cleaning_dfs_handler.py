@@ -45,6 +45,27 @@ def clean_specs(df):
     return_df[columns]=return_df[columns].astype('int64')
     return return_df
 
+def clean_prices(df):
+    all_prices=df.copy()
+    columns=list(all_prices.columns)
+    for col in columns:
+        if 'Unnamed' in col:
+            all_prices.drop(columns=col, inplace=True)
+        if 'Tests' in col:
+            all_prices.drop(columns=col, inplace=True)
+        if 'Misc' in col:
+            all_prices.drop(columns=col, inplace=True)
+    all_prices.columns=all_prices.columns.str.replace(" ","_")
+    columns=['product_id']
+    all_prices[columns]=all_prices[columns].astype('int64')
+    all_prices.columns=['product_id', '_128GB_8GB_RAM', '_128GB_6GB_RAM', '_256GB_8GB_RAM',
+       '_128GB_12GB_RAM', '_512GB_16GB_RAM', '_256GB_12GB_RAM', '_32GB_3GB_RAM',
+       '_64GB_4GB_RAM', '_128GB_4GB_RAM', '_512GB_12GB_RAM', '_64GB_6GB_RAM',
+       '_256GB_6GB_RAM', '_512GB_6GB_RAM', '_256GB_4GB_RAM', '_512GB_4GB_RAM',
+       '_512GB_8GB_RAM']
+
+    return all_prices
+
 
 
 
