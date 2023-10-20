@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS product_analyzer.fact_specs
+CREATE TABLE IF NOT EXISTS product_analyzer.dim_specs
 (
     specs_id SERIAL PRIMARY KEY NOT NULL,
     product_id INT UNIQUE,
@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS product_analyzer.fact_specs
 	sound_loudspeaker VARCHAR,
 	battery_type VARCHAR
 );
-CREATE INDEX IF NOT EXISTS idx_specs_id ON product_analyzer.fact_specs (specs_id);
+CREATE INDEX IF NOT EXISTS idx_specs_id ON product_analyzer.dim_specs (specs_id);
 
-INSERT INTO product_analyzer.fact_specs
+INSERT INTO product_analyzer.dim_specs
     (product_id,display_type,display_size,platform_os,platform_chipset,memory_internal,main_camera,sound_loudspeaker,battery_type)
 SELECT
 	src_specs.product_id,

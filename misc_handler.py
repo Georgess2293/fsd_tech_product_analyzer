@@ -378,11 +378,15 @@ def return_all_reviews_df(url):
 
 def return_all_reddit_df(df,reddit):
     result_df=pd.DataFrame()
-    for _,row in df.iterrows():
-        reviews_df=extract_reddit_comments(f"{row['brand']} {row['model']}", reddit)
-        reviews_df.insert(2,'product_id',row['product_id'])
-        result_df=pd.concat([result_df,reviews_df],axis=0,ignore_index=True)
-    return result_df
+    try:
+        for _,row in df.iterrows():
+            reviews_df=extract_reddit_comments(f"{row['brand']} {row['model']}", reddit)
+            reviews_df.insert(2,'product_id',row['product_id'])
+            result_df=pd.concat([result_df,reviews_df],axis=0,ignore_index=True)
+    except Exception as e:
+        print(e)
+    finally:
+        return result_df
 
 def return_all_amazon_df(df):
     result_df=pd.DataFrame()
@@ -716,6 +720,22 @@ def convert_currency_df(df):
     for column in return_df.columns:
         if column != 'product_id':
             return_df[column] = return_df[column].apply(convert_currency)
+    return return_df
+
+
+def openai_sentiment_analysis(review,openai):
+    response = openai.Completion.create(
+    engine="text-davinci-003",
+    prompt=(f"Sentiment analysis of the following text which is a smartphone review based on either positive,negative or neutral: '''''{review}'''''\n\nSentiment score: "),
+    temperature=0,
+    max_tokens=10
+    )
+    sentiment = response.choices[0].text.strip()
+    return sentiment
+
+def sentiment_analysis_df_openai(df,openai):
+    return_df=df.copy()
+    return_df['Sentiment']=return_df['Review_Text'].apply(lambda x:openai_sentiment_analysis(x,openai))
     return return_df
 
     

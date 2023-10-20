@@ -15,6 +15,7 @@ def replace_date(x):
 
 def clean_reviews_reddit(df):
     return_df=df.copy()
+    return_df.drop_duplicates(inplace=True)
     if return_df.columns[0]=='Unnamed: 0': 
         return_df.pop(return_df.columns[0])
     return_df.columns=return_df.columns.str.replace(" ","_")

@@ -66,18 +66,18 @@ import cleaning_dfs_handler
 #         does_etl_time_exists = True
 #     return return_date, does_etl_time_exists
 
-def insert_specs_gsm_reviews_stg(db_session,reddit,all_specs,all_reviews):
+def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,all_specs=None,all_reviews=None):
     # all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
-    all_specs=cleaning_dfs_handler.clean_specs(all_specs)
-    all_reviews=cleaning_dfs_handler.clean_reviews_gsm(all_reviews)
-    all_reviews=misc_handler.sentiment_analysis_df(all_reviews)
-    insert_stmt_specs=return_insert_into_sql_statement_from_df(all_specs,'stg_products_specs')
-    insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews,'stg_gsm_reviews')
-    for insert in insert_stmt_specs:
-        execute_query(db_session=db_session,query=insert)
-    for insert in insert_stmt_reviews:
-        execute_query(db_session=db_session,query=insert)
-    all_reviews_reddit=misc_handler.return_all_reddit_df(all_specs,reddit)
+    # all_specs=cleaning_dfs_handler.clean_specs(all_specs)
+    # all_reviews=cleaning_dfs_handler.clean_reviews_gsm(all_reviews)
+    # all_reviews=misc_handler.sentiment_analysis_df(all_reviews)
+    # insert_stmt_specs=return_insert_into_sql_statement_from_df(all_specs,'stg_products_specs')
+    # insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews,'stg_gsm_reviews')
+    # for insert in insert_stmt_specs:
+    #     execute_query(db_session=db_session,query=insert)
+    # for insert in insert_stmt_reviews:
+    #     execute_query(db_session=db_session,query=insert)
+    #all_reviews_reddit=misc_handler.return_all_reddit_df(all_specs,reddit)
     all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
