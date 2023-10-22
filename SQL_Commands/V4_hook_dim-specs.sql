@@ -16,15 +16,29 @@ CREATE INDEX IF NOT EXISTS idx_specs_id ON product_analyzer.dim_specs (specs_id)
 INSERT INTO product_analyzer.dim_specs
     (product_id,display_type,display_size,platform_os,platform_chipset,memory_internal,main_camera,sound_loudspeaker,battery_type)
 SELECT
+	SELECT
 	src_specs.product_id,
-	src_specs.display_type,
+	 CASE
+		WHEN POSITION(',' IN src_specs.display_type) > 0
+		THEN SUBSTRING(src_specs.display_type FROM 1 FOR POSITION(',' IN src_specs.display_type) - 1)
+		ELSE src_specs.display_type
+    END AS display_type,
 	SUBSTRING(src_specs.display_size, '([0-9.]+ inches)') AS display_size,
 	src_specs.platform_os,
-	src_specs.platform_chipset,
+	 CASE
+		WHEN POSITION('-' IN src_specs.platform_chipset) > 0
+		THEN SUBSTRING(src_specs.platform_chipset FROM 1 FOR POSITION('-' IN src_specs.platform_chipset) - 1)
+		ELSE src_specs.platform_chipset
+	END AS platform_chipset,
 	src_specs.memory_internal,
-	SUBSTRING(src_specs.main_camera_triple, '([0-9.]+ MP)') AS main_camera,
+	--SUBSTRING(src_specs.main_camera_triple, '([0-9.]+ MP)') AS main_camera,
+	src_specs.main_camera_triple,
 	src_specs.sound_loudspeaker,
-	src_specs.battery_type
+	 CASE
+		WHEN POSITION(',' IN src_specs.battery_type) > 0
+		THEN SUBSTRING(src_specs.battery_type FROM 1 FOR POSITION(',' IN src_specs.battery_type) - 1)
+		ELSE src_specs.battery_type
+	END AS battery_type
 FROM product_analyzer.stg_products_specs AS src_specs
 ON CONFLICT (product_id)
 DO UPDATE SET
