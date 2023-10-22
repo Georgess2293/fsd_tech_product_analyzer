@@ -105,6 +105,9 @@ class product_url(Enum):
     apple_iphone_13='https://www.gsmarena.com/apple_iphone_13-11103.php'
     apple_iphone_15_pro_max='https://www.gsmarena.com/apple_iphone_15_pro_max-12548.php'
 
+class sales_url(Enum):
+    url='https://www.sellcell.com/how-many-mobile-phones-are-sold-each-year/#sources-and-media-contacts'
+
 
 
 

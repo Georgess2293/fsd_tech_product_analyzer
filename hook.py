@@ -83,6 +83,18 @@ def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,all_specs=
     insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
     for insert in insert_stmt_reviews:
         execute_query(db_session=db_session,query=insert)
+
+def insert_sales_stg(db_session,driver):
+    try:
+        sales_df=misc_handler.return_sales_per_year(driver)
+        sales_df=cleaning_dfs_handler.clean_sales(sales_df)
+        dst_table = f"stg_sales"
+        insert_stmt = return_insert_into_sql_statement_from_df(sales_df, dst_table)
+        for insert in insert_stmt:
+            execute_query(db_session=db_session,query=insert)
+    except Exception as error:
+        print(error)
+
     
 
 

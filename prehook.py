@@ -3,7 +3,7 @@ from database_handler import execute_query, create_connection, close_connection,
 from lookups import ErrorHandling,  InputTypes, ETLStep, DESTINATION_SCHEMA,first_time
 from logging_handler import show_error_message
 import misc_handler
-from cleaning_dfs_handler import clean_reviews_gsm,clean_reviews_reddit,clean_specs,clean_prices
+from cleaning_dfs_handler import clean_reviews_gsm,clean_reviews_reddit,clean_specs,clean_prices,clean_sales
 import datetime
 import pandas as pd
 import praw
@@ -103,6 +103,19 @@ def create_sql_staging_tables_prices(db_session, driver):
     except Exception as error:
         print(error)
 
+def create_sql_staging_tables_sales(db_session,driver):
+    try:
+        sales_df=misc_handler.return_sales_per_year_prehook(driver)
+        sales_df=clean_sales(sales_df)
+        dst_table = f"stg_sales"
+        create_stmt = return_create_statement_from_df(sales_df,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
+        execute_query(db_session=db_session, query= create_stmt)
+    except Exception as error:
+        print(error)
+
+
+
+
 
 
 
@@ -132,6 +145,9 @@ def execute_prehook(sql_command_directory_path = './SQL_Commands'):
         step_name=4
         print("step:",step_name)
         create_sql_staging_tables_specs(db_session, driver)
+        step_name=5
+        print("step:",step_name)
+        create_sql_staging_tables_sales(db_session,driver)
     #     end_time = datetime.datetime.now()
     #     misc_handler.insert_into_etl_logging_table(DestinationName.Datawarehouse, db_session, PreHookSteps.CREATE_SQL_STAGING, start_time, end_time)
         close_connection(db_session)

@@ -67,6 +67,11 @@ def clean_prices(df):
 
     return all_prices
 
+def clean_sales(df):
+    return_df=df.copy()
+    return_df.columns=['brand','sales','year']
+    return return_df
+
 
 
 

@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import praw
-from lookups import brands_url,page_limit,product_url
+from lookups import brands_url,page_limit,product_url,sales_url
 from time import sleep
 from datetime import datetime
 import pandas as pd
@@ -737,6 +737,45 @@ def sentiment_analysis_df_openai(df,openai):
     return_df=df.copy()
     return_df['Sentiment']=return_df['Review_Text'].apply(lambda x:openai_sentiment_analysis(x,openai))
     return return_df
+
+
+def return_sales_per_year(driver):
+    driver.get(sales_url.url.value)
+    nav_bar = driver.find_element(By.XPATH,'//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/ul')
+    nav_options = nav_bar.find_elements(By.TAG_NAME,'a')
+    nav_links = [option.get_attribute('href') for option in nav_options]
+    nav_texts = [option.text for option in nav_options]
+    all_dataframes = []
+    for i, nav_link in enumerate(nav_links):
+        driver.get(nav_link)
+        sleep(5)
+        df = pd.read_html(driver.page_source)[-5]
+        all_dataframes.append(df)
+        print(f"Year: {nav_texts[i]}, URL: {nav_link}")
+    combined_df = pd.concat(all_dataframes, ignore_index=True)
+    combined_df['Year'] = [year for year in nav_texts for _ in range(len(combined_df)//len(nav_texts))]
+    driver.quit()
+    return combined_df
+
+def return_sales_per_year_prehook(driver):
+    driver.get(sales_url.url.value)
+    nav_bar = driver.find_element(By.XPATH,'//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/ul')
+    nav_options = nav_bar.find_elements(By.TAG_NAME,'a')
+    nav_links = [option.get_attribute('href') for option in nav_options]
+    nav_texts = [option.text for option in nav_options]
+    all_dataframes = []
+    for i, nav_link in enumerate(nav_links):
+        driver.get(nav_link)
+        sleep(5)
+        df = pd.read_html(driver.page_source)[-5]
+        all_dataframes.append(df)
+        break
+        print(f"Year: {nav_texts[i]}, URL: {nav_link}")
+    combined_df = pd.concat(all_dataframes, ignore_index=True)
+    combined_df['Year'] = '2022'
+    driver.quit()
+    return combined_df
+
 
     
      
