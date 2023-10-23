@@ -739,23 +739,7 @@ def sentiment_analysis_df_openai(df,openai):
     return return_df
 
 
-def return_sales_per_year(driver):
-    driver.get(sales_url.url.value)
-    nav_bar = driver.find_element(By.XPATH,'//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/ul')
-    nav_options = nav_bar.find_elements(By.TAG_NAME,'a')
-    nav_links = [option.get_attribute('href') for option in nav_options]
-    nav_texts = [option.text for option in nav_options]
-    all_dataframes = []
-    for i, nav_link in enumerate(nav_links):
-        driver.get(nav_link)
-        sleep(5)
-        df = pd.read_html(driver.page_source)[-5]
-        all_dataframes.append(df)
-        print(f"Year: {nav_texts[i]}, URL: {nav_link}")
-    combined_df = pd.concat(all_dataframes, ignore_index=True)
-    combined_df['Year'] = [year for year in nav_texts for _ in range(len(combined_df)//len(nav_texts))]
-    driver.quit()
-    return combined_df
+
 
 def return_sales_per_year_prehook(driver):
     driver.get(sales_url.url.value)
@@ -764,15 +748,33 @@ def return_sales_per_year_prehook(driver):
     nav_links = [option.get_attribute('href') for option in nav_options]
     nav_texts = [option.text for option in nav_options]
     all_dataframes = []
-    for i, nav_link in enumerate(nav_links):
-        driver.get(nav_link)
-        sleep(5)
-        df = pd.read_html(driver.page_source)[-5]
+    odd_numbers = list(range(1, 32, 2))
+    table = driver.find_element(By.XPATH, '//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/div')
+    for i,j in zip(odd_numbers,nav_texts):
+        df=pd.read_html(table.get_attribute('outerHTML'))[i]
+        df['Year'] = j
         all_dataframes.append(df)
         break
-        print(f"Year: {nav_texts[i]}, URL: {nav_link}")
+        #print(f"Year: {nav_texts[i]}, URL: {nav_link}")
     combined_df = pd.concat(all_dataframes, ignore_index=True)
-    combined_df['Year'] = '2022'
+    driver.quit()
+    return combined_df
+
+def return_sales_per_year(driver):
+    driver.get(sales_url.url.value)
+    nav_bar = driver.find_element(By.XPATH,'//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/ul')
+    nav_options = nav_bar.find_elements(By.TAG_NAME,'a')
+    nav_links = [option.get_attribute('href') for option in nav_options]
+    nav_texts = [option.text for option in nav_options]
+    all_dataframes = []
+    odd_numbers = list(range(1, 32, 2))
+    table = driver.find_element(By.XPATH, '//*[@id="smartphones-sold-each-year-by-manufacturer"]/div[2]/div[2]/div/div/div')
+    for i,j in zip(odd_numbers,nav_texts):
+        df=pd.read_html(table.get_attribute('outerHTML'))[i]
+        df['Year'] = j
+        all_dataframes.append(df)
+        #print(f"Year: {nav_texts[i]}, URL: {nav_link}")
+    combined_df = pd.concat(all_dataframes, ignore_index=True)
     driver.quit()
     return combined_df
 
