@@ -17,6 +17,15 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from textblob import TextBlob
 
+def return_url_gsm_search(input_text,driver):
+    try:
+        url=f'https://www.gsmarena.com/res.php3?sSearch={input_text}'
+        driver.get(url)
+        product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers a')
+        return_url= product_links[0].get_attribute('href')
+        return return_url
+    except:
+        print("No product found")
 
 
 def return_specs_df(url,driver):

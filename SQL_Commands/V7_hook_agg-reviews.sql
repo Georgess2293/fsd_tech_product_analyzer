@@ -1,9 +1,22 @@
-CREATE VIEW product_analyzer.review_stats AS(
+CREATE TABLE IF NOT EXISTS product_analyzer.agg_reviews
+(
+    product_id INT,
+    review_date DATE,
+    total_reviews BIGINT,
+    positive_reviews BIGINT,
+    positive_percentage NUMERIC,
+    negative_reviews BIGINT,
+    negative_percentage NUMERIC,
+
+);
+
+INSERT INTO product_analyzer.agg_reviews
+    (product_id,review_date,total_reviews,positive_reviews,positive_percentage,negative_reviews,negative_percentage)
+
+
 WITH REVIEW_NUMBER AS(
 SELECT
 	products.product_id,
-	products.brand,
-	products.model,
 	reviews.review_date,
 	COUNT(CASE WHEN
 		reviews.sentiment='Positive' THEN reviews.review_id END) AS positive_reviews,
@@ -15,8 +28,6 @@ ON reviews.product_id=products.product_id
 GROUP BY
 	products.product_id,
 	reviews.review_date,
-	products.brand,
-	products.model,
 	products.release_date
 ORDER BY reviews.review_date
 	),
@@ -24,8 +35,6 @@ ORDER BY reviews.review_date
 REVIEW_PERCENTAGES AS (
     SELECT
         product_id,
-        brand,
-        model,
         review_date,
         positive_reviews+negative_reviews AS total_reviews,
         positive_reviews,
@@ -37,8 +46,6 @@ REVIEW_PERCENTAGES AS (
 	
 SELECT
     product_id,
-    brand,
-    model,
     review_date,
     total_reviews,
     positive_reviews,
@@ -47,5 +54,3 @@ SELECT
     negative_percentage
 FROM REVIEW_PERCENTAGES
 ORDER BY review_date
-)
-	
