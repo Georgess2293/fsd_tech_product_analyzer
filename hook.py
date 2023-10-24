@@ -66,23 +66,81 @@ import cleaning_dfs_handler
 #         does_etl_time_exists = True
 #     return return_date, does_etl_time_exists
 
-def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,all_specs=None,all_reviews=None):
-    # all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
-    # all_specs=cleaning_dfs_handler.clean_specs(all_specs)
-    # all_reviews=cleaning_dfs_handler.clean_reviews_gsm(all_reviews)
-    # all_reviews=misc_handler.sentiment_analysis_df(all_reviews)
-    # insert_stmt_specs=return_insert_into_sql_statement_from_df(all_specs,'stg_products_specs')
-    # insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews,'stg_gsm_reviews')
-    # for insert in insert_stmt_specs:
-    #     execute_query(db_session=db_session,query=insert)
-    # for insert in insert_stmt_reviews:
-    #     execute_query(db_session=db_session,query=insert)
-    #all_reviews_reddit=misc_handler.return_all_reddit_df(all_specs,reddit)
-    all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
-    all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
-    insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
+def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all_specs=None,all_reviews=None):
+    all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
+    all_specs=cleaning_dfs_handler.clean_specs(all_specs)
+    all_reviews=cleaning_dfs_handler.clean_reviews_gsm(all_reviews)
+    all_reviews=misc_handler.sentiment_analysis_df(all_reviews)
+    insert_stmt_specs=return_insert_into_sql_statement_from_df(all_specs,'stg_products_specs')
+    insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews,'stg_gsm_reviews')
+    for insert in insert_stmt_specs:
+        execute_query(db_session=db_session,query=insert)
     for insert in insert_stmt_reviews:
         execute_query(db_session=db_session,query=insert)
+    all_reviews_reddit=misc_handler.return_all_reddit_df(all_specs,reddit)
+    all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
+    all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
+    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
+    for insert in insert_stmt_reviews_reddit:
+        execute_query(db_session=db_session,query=insert)
+
+def create_etl_last_date(schema_name , db_session):
+    query = f"""
+        CREATE TABLE IF NOT EXISTS {schema_name}.etl_last_date
+        (
+            product_id INT,
+            etl_last_date DATE
+        )
+        """
+    execute_query(db_session, query)
+
+def insert_into_last_date(schema_name,db_session):
+    query=f"""
+        INSERT INTO {schema_name}.etl_last_date (product_id,etl_last_date)
+        SELECT
+            product_id,
+            MAX(review_date)
+        FROM product_analyzer.fact_reviews
+        GROUP BY product_id
+        """
+    execute_query(db_session, query)
+    
+def return_last_date(product_id,schema_name,db_session):
+    query=f"""SELECT etl_last_date FROM {schema_name}.etl_last_date WHERE product_id={product_id}"""
+    return_df=return_data_as_df(query,input_type=InputTypes.SQL,db_session=db_session)
+    return return_df
+
+
+def insert_into_stg(db_session,driver,url,reddit,schema_name):
+    specs_df=misc_handler.return_specs_df(url,driver)
+    specs_df=cleaning_dfs_handler.clean_specs(specs_df)
+    product_id=specs_df.iloc[0,0]
+    reviews_gsm_df=misc_handler.extract_all_reviews(url,driver)
+    reviews_gsm_df=cleaning_dfs_handler.clean_reviews_gsm(reviews_gsm_df)
+    last_date_df=return_last_date(product_id,schema_name,db_session)
+    if len(last_date_df>0):
+        reviews_gsm_df=reviews_gsm_df.loc((reviews_gsm_df['review_date']>last_date_df.iloc(0,0)))
+    reviews_gsm_df=misc_handler.sentiment_analysis_df(reviews_gsm_df)
+    all_reviews_reddit=misc_handler.return_all_reddit_df(specs_df,reddit)
+    all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
+    if len(last_date_df>0):
+        all_reviews_reddit=all_reviews_reddit.loc((all_reviews_reddit['review_date']>last_date_df.iloc(0,0)))
+    all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
+    prices_df=misc_handler.return_prices_df(url,driver)
+    prices_df=cleaning_dfs_handler.clean_prices(prices_df)
+    insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs')
+    insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews')
+    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
+    insert_stmt_prices=return_insert_into_sql_statement_from_df(specs_df,'stg_products_prices')
+    for insert in insert_stmt_specs:
+        execute_query(db_session=db_session,query=insert)
+    for insert in insert_stmt_reviews:
+        execute_query(db_session=db_session,query=insert)
+    for insert in insert_stmt_reviews_reddit:
+        execute_query(db_session=db_session,query=insert)
+    for insert in insert_stmt_prices:
+        execute_query(db_session=db_session,query=insert)
+
 
 def insert_sales_stg(db_session,driver):
     try:
@@ -101,28 +159,4 @@ def insert_sales_stg(db_session,driver):
 
 def execute_hook(is_full_refresh):
     print("hook")
-    # db_session = create_connection()
-    # create_etl_checkpoint(db_session)
-    # etl_date, does_etl_time_exists = return_etl_last_updated_date(db_session)
-    # start_time = datetime.datetime.now()
-    # read_source_df_insert_dest(db_session,SourceName.DVD_RENTAL, etl_date)
-    # end_time = datetime.datetime.now()
-    # misc_handler.insert_into_etl_logging_table(DestinationName.Datawarehouse, db_session, HookSteps.WRITE_TO_DW, start_time, end_time)
-
-    # read_execute_sql_transformation(db_session, './SQL_Commands', ETLStep.HOOK, DestinationName.Datawarehouse, is_full_refresh)
-    # # last step
-    # insert_or_update_etl_checkpoint(db_session, datetime.now(), does_etl_time_exists)
-    # close_connection()
-
-
-# for index, row in rental_per_customer.iterrows():
-#     existing_count_query = f"SELECT total_rentals FROM public.customer_rental_count WHERE customer_id = {row['customer_id']};"
-#     existing_query_df = database_handler.return_data_as_df(file_executor= existing_count_query, input_type= lookups.InputTypes.SQL, db_session= db_session)
-#     length_df = len(existing_query_df)
-#     if length_df == 0:
-#         insert_query = f"INSERT INTO public.customer_rental_count (customer_id, total_rentals) VALUES ({row['customer_id']}, {row['total_rentals']})"
-#         database_handler.execute_query(db_session, insert_query)
-#     else:
-#         new_count = existing_query_df['total_rentals'][0] + row['total_rentals']
-#         update_query = f"UPDATE public.customer_rental_count SET total_rentals = {new_count} WHERE customer_id = {row['customer_id']};"
-#         database_handler.execute_query(db_session, update_query)
+    
