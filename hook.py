@@ -4,7 +4,7 @@ from datetime import datetime
 # from prehook import return_tables_by_schema, return_lookup_items_as_dict, execute_sql_folder
 import misc_handler
 import cleaning_dfs_handler
-
+import pandas as pd
     
 # def create_etl_checkpoint(schema_name , db_session):
 #     query = f"""
@@ -119,12 +119,12 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
     reviews_gsm_df=cleaning_dfs_handler.clean_reviews_gsm(reviews_gsm_df)
     last_date_df=return_last_date(product_id,schema_name,db_session)
     if len(last_date_df>0):
-        reviews_gsm_df=reviews_gsm_df.loc((reviews_gsm_df['review_date']>last_date_df.iloc(0,0)))
+        reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
     reviews_gsm_df=misc_handler.sentiment_analysis_df(reviews_gsm_df)
     all_reviews_reddit=misc_handler.return_all_reddit_df(specs_df,reddit)
     all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
     if len(last_date_df>0):
-        all_reviews_reddit=all_reviews_reddit.loc((all_reviews_reddit['review_date']>last_date_df.iloc(0,0)))
+        all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)
