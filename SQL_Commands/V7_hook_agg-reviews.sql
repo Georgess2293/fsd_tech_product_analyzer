@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS product_analyzer.agg_reviews
     positive_reviews BIGINT,
     positive_percentage NUMERIC,
     negative_reviews BIGINT,
-    negative_percentage NUMERIC,
+    negative_percentage NUMERIC
 
 );
 
