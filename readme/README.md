@@ -51,7 +51,7 @@
 3. As a Tech Influencer:
 	I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.
 	I need the ability to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.
-4. As a Policy Maker:
+4. As a Smartphone Shop Owner:
 	I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies..
 	I want to track product performance and customer reviews to ensure that the products I offer align with market demands.
 
