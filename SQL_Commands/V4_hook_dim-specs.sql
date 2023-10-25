@@ -16,7 +16,6 @@ CREATE INDEX IF NOT EXISTS idx_specs_id ON product_analyzer.dim_specs (specs_id)
 INSERT INTO product_analyzer.dim_specs
     (product_id,display_type,display_size,platform_os,platform_chipset,memory_internal,main_camera,sound_loudspeaker,battery_type)
 SELECT
-	SELECT
 	src_specs.product_id,
 	 CASE
 		WHEN POSITION(',' IN src_specs.display_type) > 0
