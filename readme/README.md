@@ -249,7 +249,7 @@ pip install -r requirements.txt
 
 ```sh
 
-git clone https://github.co/your-repo-link/usa-recession-analysis.git
+git clone https://github.com/Georgess2293/fsd_tech_product_analyzer.git
 
 ```
 

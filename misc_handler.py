@@ -60,15 +60,16 @@ def extract_reviews_from_page(url,driver):
     # options=Options()
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
+    sleep(2)
     driver.get(url)
-    review_elements = driver.find_elements(By.CLASS_NAME, 'user-thread')
+    #review_elements = driver.find_elements(By.CLASS_NAME, 'user-thread')
     product_id=url.split('-reviews-')[1].split('p')[0]
     try:
         name = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="body"]/div/div[1]/div/div[1]/h1'))).text
     except:
         name=None
     # Loop through the review elements to extract user name, rating, and date
-
+    review_elements = driver.find_elements(By.CLASS_NAME, 'user-thread')
     reviews_data = []
     for review_element in review_elements:
         user_name_element = review_element.find_element(By.XPATH, './/*[contains(@class, "uname") or contains(@class, "uname2")]')
@@ -94,6 +95,10 @@ def extract_reviews_from_page(url,driver):
 
 
 def extract_all_reviews(url,driver):
+    # driver = webdriver.Chrome()
+    # options=Options()
+    # options.add_argument('--headless')
+    # driver = webdriver.Chrome(options=options)
     all_reviews_data = []
     page_number=1
     url_reviews=url.split('-')[0]+'-reviews-'+url.split('-')[1]
@@ -111,6 +116,7 @@ def extract_all_reviews(url,driver):
         all_reviews_data.extend(reviews_on_page)
         page_number += 1
     all_reviews_data_df=pd.DataFrame(all_reviews_data)
+    #driver.quit()
     return all_reviews_data_df
     
 

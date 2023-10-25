@@ -40,7 +40,7 @@ def create_sql_staging_tables_reddit(db_session, driver,reddit):
         staging_reddit=clean_reviews_reddit(staging_reddit)
         staging_reddit=misc_handler.sentiment_analysis_df(staging_reddit)
         staging_reddit.insert(2,'product_id',1)
-        dst_table = f"stg_reddit_reviews"
+        dst_table = f"stg_reddit_reviews1"
         create_stmt = return_create_statement_from_df(staging_reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
         #create_sql_staging_table_index(db_session, 'dw_reporting', dst_table, columns[0])
@@ -54,7 +54,7 @@ def create_sql_staging_tables_gsm_reviews(db_session, driver):
         staging_gsm_reviews=pd.DataFrame(staging_gsm_reviews)
         staging_gsm_reviews=clean_reviews_gsm(staging_gsm_reviews)
         staging_gsm_reviews=misc_handler.sentiment_analysis_df(staging_gsm_reviews)
-        dst_table = f"stg_gsm_reviews"
+        dst_table = f"stg_gsm_reviews1"
         create_stmt = return_create_statement_from_df(staging_gsm_reviews,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
         #create_sql_staging_table_index(db_session, 'dw_reporting', dst_table, columns[0])
@@ -72,7 +72,7 @@ def create_sql_staging_tables_specs(db_session, driver):
         staging_specs = pd.DataFrame(columns=columns)
         #staging_specs=misc_handler.return_specs_df(first_time.specs_url.value,driver)
         staging_specs=clean_specs(staging_specs)
-        dst_table = f"stg_products_specs"
+        dst_table = f"stg_products_specs1"
         create_stmt = return_create_statement_from_df(staging_specs,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
         #create_sql_staging_table_index(db_session, 'dw_reporting', dst_table, columns[0])
@@ -96,7 +96,7 @@ def create_sql_staging_tables_prices(db_session, driver):
         #staging_specs=misc_handler.return_specs_df(first_time.specs_url.value,driver)
         staging_prices=clean_prices(staging_prices)
         staging_prices[columns_float]=staging_prices[columns_float].astype('float64')
-        dst_table = f"stg_products_prices"
+        dst_table = f"stg_products_prices1"
         create_stmt = return_create_statement_from_df(staging_prices,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
         #create_sql_staging_table_index(db_session, 'dw_reporting', dst_table, columns[0])
@@ -107,7 +107,7 @@ def create_sql_staging_tables_sales(db_session,driver):
     try:
         sales_df=misc_handler.return_sales_per_year_prehook(driver)
         sales_df=clean_sales(sales_df)
-        dst_table = f"stg_sales"
+        dst_table = f"stg_sales1"
         create_stmt = return_create_statement_from_df(sales_df,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
     except Exception as error:
@@ -147,7 +147,8 @@ def execute_prehook(sql_command_directory_path = './SQL_Commands'):
         create_sql_staging_tables_specs(db_session, driver)
         step_name=5
         print("step:",step_name)
-        create_sql_staging_tables_sales(db_session,driver)
+        create_sql_staging_tables_prices(db_session, driver)
+        #create_sql_staging_tables_sales(db_session,driver)
     #     end_time = datetime.datetime.now()
     #     misc_handler.insert_into_etl_logging_table(DestinationName.Datawarehouse, db_session, PreHookSteps.CREATE_SQL_STAGING, start_time, end_time)
         close_connection(db_session)

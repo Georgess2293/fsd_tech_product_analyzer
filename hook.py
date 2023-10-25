@@ -1,10 +1,20 @@
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_insert_into_sql_statement_from_df
-from lookups import InputTypes, IncrementalField,ETLStep
+from lookups import InputTypes, IncrementalField,ETLStep,DESTINATION_SCHEMA
 from datetime import datetime
 # from prehook import return_tables_by_schema, return_lookup_items_as_dict, execute_sql_folder
 import misc_handler
 import cleaning_dfs_handler
 import pandas as pd
+import praw
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException,WebDriverException
+from selenium.webdriver.common.action_chains import ActionChains
     
 # def create_etl_checkpoint(schema_name , db_session):
 #     query = f"""
@@ -112,26 +122,26 @@ def return_last_date(product_id,schema_name,db_session):
 
 
 def insert_into_stg(db_session,driver,url,reddit,schema_name):
-    specs_df=misc_handler.return_specs_df(url,driver)
-    specs_df=cleaning_dfs_handler.clean_specs(specs_df)
-    product_id=specs_df.iloc[0,0]
+    specs_df=misc_handler.return_specs_df(url,driver) 
     reviews_gsm_df=misc_handler.extract_all_reviews(url,driver)
     reviews_gsm_df=cleaning_dfs_handler.clean_reviews_gsm(reviews_gsm_df)
+    specs_df=cleaning_dfs_handler.clean_specs(specs_df)
+    product_id=specs_df.iloc[0,0]
     last_date_df=return_last_date(product_id,schema_name,db_session)
-    if len(last_date_df>0):
+    if len(last_date_df)>0:
         reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
     reviews_gsm_df=misc_handler.sentiment_analysis_df(reviews_gsm_df)
     all_reviews_reddit=misc_handler.return_all_reddit_df(specs_df,reddit)
     all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
-    if len(last_date_df>0):
+    if len(last_date_df)>0:
         all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)
-    insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs')
-    insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews')
-    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
-    insert_stmt_prices=return_insert_into_sql_statement_from_df(specs_df,'stg_products_prices')
+    insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs1')
+    insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews1')
+    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews1')
+    insert_stmt_prices=return_insert_into_sql_statement_from_df(specs_df,'stg_products_prices1')
     for insert in insert_stmt_specs:
         execute_query(db_session=db_session,query=insert)
     for insert in insert_stmt_reviews:
@@ -157,6 +167,20 @@ def insert_sales_stg(db_session,driver):
 
 
 
-def execute_hook(is_full_refresh):
+def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
+    reddit=praw.Reddit(
+            client_id="A99udy2Ex7RaoBzW5O3Gdw",
+            client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
+            user_agent="my-tech"
+        )
+    driver = webdriver.Chrome()
+    # options=Options()
+    # options.add_argument('--headless')
+    # driver = webdriver.Chrome(options=options)
+    db_session = create_connection()
+    url=misc_handler.return_url_gsm_search(input_text,driver)
+    insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
     print("hook")
+    driver.quit()
+    close_connection(db_session)
     
