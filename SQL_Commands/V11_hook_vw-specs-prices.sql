@@ -1,4 +1,4 @@
-CREATE VIEW product_analyzer.specs_prices AS(
+CREATE OR REPLACE VIEW product_analyzer.specs_prices AS(
 SELECT
 	prod.product_id,
 	prod.brand,

@@ -1,4 +1,4 @@
-CREATE VIEW product_analyzer.avg_prices AS(
+CREATE OR REPLACE VIEW product_analyzer.avg_prices AS(
     SELECT
         product.product_id,
         product.brand,

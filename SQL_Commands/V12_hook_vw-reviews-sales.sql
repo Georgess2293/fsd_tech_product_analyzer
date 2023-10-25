@@ -1,4 +1,4 @@
- CREATE VIEW product_analyzer.reviews_sales AS (
+ CREATE OR REPLACE VIEW product_analyzer.reviews_sales AS (
  SELECT
     reviews.product_id,
 	products.brand,

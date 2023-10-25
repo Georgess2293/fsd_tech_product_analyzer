@@ -49,7 +49,7 @@
 -- ORDER BY review_date
 -- )
 
-CREATE VIEW product_analyzer.reviews_stats AS (
+CREATE OR REPLACE VIEW product_analyzer.reviews_stats AS (
     SELECT
     reviews.product_id,
 	products.brand,
