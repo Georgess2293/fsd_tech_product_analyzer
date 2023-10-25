@@ -126,10 +126,10 @@ def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
             client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
             user_agent="my-tech"
         )
-    driver = webdriver.Chrome()
-    # options=Options()
-    # options.add_argument('--headless')
-    # driver = webdriver.Chrome(options=options)
+    #driver = webdriver.Chrome()
+    options=Options()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options)
     db_session = create_connection()
     create_etl_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
     insert_into_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
