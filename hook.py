@@ -138,6 +138,7 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)
+    prices_df=misc_handler.convert_currency(prices_df)
     insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs1')
     insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews1')
     insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews1')
