@@ -1,5 +1,5 @@
 
-<img  src="./readme/title1.svg"/>
+<img  src="title1.svg"/>
 
 <div>
 
@@ -14,11 +14,10 @@
 <!-- project philosophy -->
 
 <a  name="philosophy" ></a>
-<img  src="./readme/title2.svg" id="project-philosophy"/>
+<img  src="title2.svg" id="project-philosophy"/>
 
-> A python based ETL project that would extract, transform data from different web sources and load them into a tabular database (PostgreSQL) in an attempt to provide a full scope analytical understanding of the USA recession. 
+> Tech Product Analyzer is a Python-based ETL (Extract, Transform, Load) project designed to gather and analyze data from various web sources. The primary focus of this project is to provide comprehensive insights into tech products, with a particular emphasis on smartphones. This is achieved by extracting user reviews and preferences, transforming the data, and loading it into a PostgreSQL database for in-depth analysis. 
 
->USA Recession Analysis and Prediction Project, also aims to predict the probabilities of when this might occur in the near future based on the historical data analyzed.
 <br>
 
   
@@ -29,9 +28,9 @@
 
 1. Data Engineers.
 2. Data Analysts.
-3. Economists.
-4. Policy Makers.
-5. Journalist.
+3. Tech Influencers .
+4. Smartphones shop owners.
+
   
 
 <br>
@@ -42,29 +41,25 @@
 
   
 1. As a Data Engineer:
-	I want to automatically scrape various economic indicators from reputable sources so that our dataset is always up-to-date.
+	I want to automatically scrape various and new released products from reputable sources with the latest reviews so that our dataset is always up-to-date.
 	I want to integrate different data sources seamlessly.
 	Ensure fault tolerance in our data pipelines, so that potential failures don't interrupt our analyses.
 2. As an Analyst:
 	I want to query the database.
-	I want to view the sentiment analysis results to understand public sentiment around economic conditions.
+	I want to view the sentiment analysis results to understand users sentiment about different brands and products.
 	I want to visualize the data using PowerBI.
-3. As an Economist:
-	I want to access a dataset that provides a holistic view of the US economic landscape post-COVID-19.
-	I want to compare model's projections with other economic forecasts to ensure accuracy and reliability.
+3. As a Tech Influencer:
+	I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.
+	I need the ability to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.
 4. As a Policy Maker:
-	I want to understand if the US is still in recession to make informed decisions about economic policies.
-	I want to view reports highlighting key economic indicators and their trend over time.
-5. As a Journalist:
-	I want to access clear visualizations.
-	I want to understand public sentiments.
-	I want an access on the historical view of the economic indicators to showcase trends.
+	I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies..
+	I want to track product performance and customer reviews to ensure that the products I offer align with market demands.
 
 
 <br><br>
 
 <!-- Prototyping -->
-<img  src="./readme/title3.svg"  id="prototyping"/>
+<img  src="title3.svg"  id="prototyping"/>
 
 > We have designed our projects to webscrape, through an ETL project and including it in a PowerBI Sample Dashboard, 
 
@@ -109,13 +104,12 @@
 <!-- Tech stacks -->
 
 <a  name="stacks"></a>
-<img  src="./readme/title4.svg" id="stacks" />
+<img  src="title4.svg" id="stacks" />
 
 <br>
 
   
 
-Bin Tracker is built using the following technologies:
 
   
 
@@ -124,10 +118,10 @@ Bin Tracker is built using the following technologies:
 Interactive PowerBI Dashboard:
 A central dashboard where viewers can view:
 
-1. Economic Indicators: Graphs, charts and visualizations displaying key economic metrics over time.
-2. Sentiment Analysis: Representations of public sentiment about economic conditions, perhaps through heat maps, pie charts, or sentiment bars.
-3. Predictive Analysis: A visualization of the ML model's performance about he US econmoic recovery compared to actual data.
-4. Interactive filters: options to filter data by date, region, or specific economic indicatiors for customized views.
+1. Market Indicator: Graphs, charts and visualizations displaying yearly sales of manufacturers.
+2. Sentiment Analysis: Representations of consumers sentiment about different products over time through pie charts and bars.
+3. Specs analysis: Display correlation between the specs and the reviews.
+4. Interactive filters: options to filter data by date, brand, or product for customized views.
 
 
   
@@ -140,8 +134,7 @@ A central dashboard where viewers can view:
 
 1. Web scraping & Automation.
 2. ETL Pipeline: using python and pandas, raw data is extracted, transformed into a usable format and loaded into postgreSQL database.
-3. Database: Schema Design - Indexing - Data Integrity - Backup & Recovery.
-4. Machine Learning & Predictive Analysis: Model Training - Evaluation and Prediction.  
+3. Database: Schema Design - Indexing - Data Integrity.
 
 <br>
 
@@ -152,7 +145,7 @@ A central dashboard where viewers can view:
 <!-- Implementation -->
 
 <a  name="Demo"  ></a>
-<img  src="./readme/title5.svg" id="#demo"/>
+<img  src="title5.svg" id="#demo"/>
 
 > Show command line of ETL performance - Logger view
 
@@ -214,39 +207,16 @@ A central dashboard where viewers can view:
 
 <br><br>
 
-### Machine Learning (ML) component
-Using Keras, we analyze the historical economic data, training predictive models and deploying them for real-time predictions.
 
-  Data Collection & Preprocessing.
-  Model Selection & Training
-  Model Evaluation.
-  Model Deployment
-  
-
-| ML Flow Diagram|
-
-| ---| ---|
-
-|![fsdaf](./readme/implementation/arduino.gif)|![fsdaf](./readme/implementation/circuit.png)
-
-  
-
-| Data Transfer Demo |
-
-| ---|
-
-| ![fsdaf](./readme/implementation/arduino_data.png) |
-
-<br><br>
 
 
 <!-- How to run -->
 
 <a  name="run"  ></a>
-<img  src="./readme/title6.svg" id="run"/>
+<img  src="title6.svg" id="run"/>
   
 
-> To set up ## **USA Recession Analysis and Prediction** follow these steps:
+> To set up ## **Tech Product Analyzer** follow these steps:
 
 ### Prerequisites
 
@@ -261,7 +231,14 @@ Using Keras, we analyze the historical economic data, training predictive models
 
 **Dependencies**:
 
--   Install the necessary Python libraries: `pandas`, `scikit-learn`, `selenium`, `BeautifulSoup`, etc.
+-   Install the necessary Python libraries by referring to the requirements.txt file:
+
+```sh
+
+pip install -r requirements.txt
+
+```
+
 -   Install database connectors/drivers for PostgreSQL.
   
 
@@ -288,7 +265,5 @@ git clone https://github.co/your-repo-link/usa-recession-analysis.git
 **Start the Data Ingestion & ETL Process**:
 `python data_ingestion_script.py`
 
-
-You should be able to check the app.log file to see the ETL work.
 
 As for the dashboard access: Please use this link "public powerbi link" to access your data.
