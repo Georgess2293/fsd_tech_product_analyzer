@@ -6,6 +6,7 @@ import misc_handler
 import cleaning_dfs_handler
 import pandas as pd
 import praw
+import os
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -16,65 +17,16 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
     
-# def create_etl_checkpoint(schema_name , db_session):
-#     query = f"""
-#         CREATE TABLE IF NOT EXISTS {schema_name}.etl_checkpoint
-#         (
-#             etl_last_run_date TIMESTAMP
-#         )
-#         """
-#     execute_query(db_session, query)
-    
-# def insert_or_update_etl_checkpoint(db_session, etl_date, does_etl_time_exists):
-#     if does_etl_time_exists:
-#         # update with etl_date
-#         pass
-#     else:
-#         # insert with etl_date
-#         pass
 
-# def read_source_df_insert_dest(db_session, source_name, etl_date = None):
-#     try:
-#         source_name = source_name.value
-#         tables = misc_handler.return_tables_by_schema(source_name)
-#         incremental_date_dict = None # misc_handler.return_lookup_items_as_dict(IncrementalField)
 
-#         for table in tables:
-#             staging_query = f"""
-#                     SELECT * FROM {source_name}.{table} WHERE {incremental_date_dict.get(table)} >= {etl_date}
-#             """ 
-#             staging_df = return_data_as_df(db_session= db_session, input_type= InputTypes.SQL, file_executor= staging_query)
-#             # staging_df = staging_df[staging_df['return_date'] > etl_date]
-#             if table == SQLTablesToReplicate.FILM_ACTOR.value:
-#                 staging_df['film_actor_id'] = str(staging_df['actor_id']) + "-" + str(staging_df['film_id'])
-#             dst_table = f"stg_{source_name}_{table}"
-#             insert_stmt = return_insert_into_sql_statement_from_df(staging_df, 'dw_reporting', dst_table)
-#             execute_query(db_session=db_session, query= insert_stmt)
-#     except Exception as error:
-#         return staging_query
-    
-# def read_execute_sql_transformation(db_session, sql_command_directory_path, etl_step, destination_name, is_full_refresh):
-#     pass
-#     # if is_full_refresh:
-#     #     execute_sql_folder(db_session, sql_command_directory_path, etl_step, destination_name)
-#     # else:
-#     #     pass
-
-# def return_etl_last_updated_date(db_session):
-#     does_etl_time_exists = False
-#     query = "SELECT etl_last_run_date FROM dw_reporting.etl_checkpoint ORDER BY etl_last_run_date DESC LIMIT 1"
-#     etl_df = return_data_as_df(
-#         file_executor= query,
-#         input_type= InputTypes.SQL,
-#         db_session= db_session
-#     )
-#     if len(etl_df) == 0:
-#         # choose oldest day possible.
-#         return_date = datetime.datetime(1992,6,19)
-#     else:
-#         return_date = etl_df['etl_last_run_date'].iloc[0]
-#         does_etl_time_exists = True
-#     return return_date, does_etl_time_exists
+def execute_hook_sql(db_session, sql_command_directory_path):
+    sql_files =misc_handler.retreive_sql_files(sql_command_directory_path)
+    for sql_file in sql_files:
+        if str(sql_file.split('-')[0].split('_')[1]) == ETLStep.HOOK.value:
+            with open(os.path.join(sql_command_directory_path,sql_file), 'r') as file:
+                sql_query = file.read()
+                sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
+                execute_query(db_session, sql_query)
 
 def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all_specs=None,all_reviews=None):
     all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
@@ -179,9 +131,12 @@ def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
     db_session = create_connection()
+    create_etl_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    insert_into_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
     url=misc_handler.return_url_gsm_search(input_text,driver)
     insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
-    print("hook")
     driver.quit()
+    execute_hook_sql(db_session, sql_command_directory_path)
+
     close_connection(db_session)
     
