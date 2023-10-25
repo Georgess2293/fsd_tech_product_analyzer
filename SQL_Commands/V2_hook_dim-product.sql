@@ -14,7 +14,7 @@ SELECT
 	src_product.brand,
 	src_product.model,
 	src_product.release_date
-FROM product_analyzer.stg_products_specs src_product
+FROM product_analyzer.stg_products_specs1 src_product
 ON CONFLICT (product_id)
 DO UPDATE SET
     brand = EXCLUDED.brand,

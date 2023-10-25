@@ -38,7 +38,7 @@ SELECT
 		THEN SUBSTRING(src_specs.battery_type FROM 1 FOR POSITION(',' IN src_specs.battery_type) - 1)
 		ELSE src_specs.battery_type
 	END AS battery_type
-FROM product_analyzer.stg_products_specs AS src_specs
+FROM product_analyzer.stg_products_specs1 AS src_specs
 ON CONFLICT (product_id)
 DO UPDATE SET
 product_id=EXCLUDED.product_id,

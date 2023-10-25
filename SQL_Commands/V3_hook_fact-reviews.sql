@@ -17,7 +17,7 @@ SELECT
 	src_gsm.date,
 	src_gsm.review_text,
 	src_gsm.sentiment_nltk
-FROM product_analyzer.stg_gsm_reviews as src_gsm	
+FROM product_analyzer.stg_gsm_reviews1 as src_gsm	
 UNION
 SELECT
 	src_reddit.user_name,
@@ -25,4 +25,4 @@ SELECT
 	src_reddit.date,
 	src_reddit.review_text,
 	src_reddit.sentiment_nltk
-FROM product_analyzer.stg_reddit_reviews as src_reddit
+FROM product_analyzer.stg_reddit_reviews1 as src_reddit
