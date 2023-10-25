@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS product_analyzer.agg_prices
 (
-    product_id,
-    avg_price
+    product_id INT,
+    avg_price FLOAT
 );
 
 INSERT INTO product_analyzer.agg_prices
@@ -37,3 +37,5 @@ SELECT product_id,
            ), 0)
        ) AS avg_price
 FROM product_analyzer.dim_prices
+ON CONFLICT (product_id) DO UPDATE
+SET avg_price = EXCLUDED.avg_price;
