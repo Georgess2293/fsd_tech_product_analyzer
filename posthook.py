@@ -1,4 +1,4 @@
-from database_handler import execute_query, create_connection
+from database_handler import execute_query, create_connection,close_connection
 import misc_handler
 import lookups
 
@@ -14,4 +14,6 @@ def execute_posthook():
     db_session = create_connection()
     tables = misc_handler.return_staging_tables_as_list()
     truncate_staging_tables(lookups.DESTINATION_SCHEMA.DESTINATION_NAME.value,tables,db_session)
+    close_connection(db_session)
+
    
