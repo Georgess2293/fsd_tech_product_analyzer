@@ -1,5 +1,5 @@
 
-<img  src="title1.svg"/>
+<img  src="./readme/title1.svg"/>
 
 <div>
 
@@ -14,7 +14,7 @@
 <!-- project philosophy -->
 
 <a  name="philosophy" ></a>
-<img  src="title2.svg" id="project-philosophy"/>
+<img  src="./readme/title2.svg" id="project-philosophy"/>
 
 > Tech Product Analyzer is a Python-based ETL (Extract, Transform, Load) project designed to gather and analyze data from various web sources. The primary focus of this project is to provide comprehensive insights into tech products, with a particular emphasis on smartphones. This is achieved by extracting user reviews and preferences, transforming the data, and loading it into a PostgreSQL database for in-depth analysis. 
 
@@ -59,7 +59,7 @@
 <br><br>
 
 <!-- Prototyping -->
-<img  src="title3.svg"  id="prototyping"/>
+<img  src="./readme/title3.svg"  id="prototyping"/>
 
 > We have designed our projects to webscrape, through an ETL project and including it in a PowerBI Sample Dashboard, 
 
@@ -104,7 +104,7 @@
 <!-- Tech stacks -->
 
 <a  name="stacks"></a>
-<img  src="title4.svg" id="stacks" />
+<img  src="./readme/title4.svg" id="stacks" />
 
 <br>
 
@@ -145,7 +145,7 @@ A central dashboard where viewers can view:
 <!-- Implementation -->
 
 <a  name="Demo"  ></a>
-<img  src="title5.svg" id="#demo"/>
+<img  src="./readme/title5.svg" id="#demo"/>
 
 > Show command line of ETL performance - Logger view
 
@@ -213,7 +213,7 @@ A central dashboard where viewers can view:
 <!-- How to run -->
 
 <a  name="run"  ></a>
-<img  src="title6.svg" id="run"/>
+<img  src="./readme/title6.svg" id="run"/>
   
 
 > To set up ## **Tech Product Analyzer** follow these steps:
