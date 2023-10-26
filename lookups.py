@@ -27,10 +27,6 @@ class PreHookSteps(Enum):
     EXECUTE_SQL_QUERY = "execute_sql_folder"
     CREATE_SQL_STAGING = "create_sql_staging_tables"
 
-class IncrementalField(Enum):
-    RENTAL = "rental_last_update"
-    FILM = "film_last_update"
-    ACTOR = "actor_last_update"
 
 class ETLStep(Enum):
     PRE_HOOK = "prehook"
@@ -107,6 +103,13 @@ class product_url(Enum):
 
 class sales_url(Enum):
     url='https://www.sellcell.com/how-many-mobile-phones-are-sold-each-year/#sources-and-media-contacts'
+
+class staging_tables(Enum):
+    Products_Specs='stg_products_specs1'
+    Products_Prices='stg_products_prices1'
+    GSM_Reviews='stg_gsm_reviews1'
+    Reddit_Reviews='stg_reddit_reviews1'
+
 
 
 
