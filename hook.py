@@ -119,13 +119,13 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
     product_id=specs_df.iloc[0,0]
     last_date_gsm_df=return_max_date_gsm(product_id,schema_name,db_session)
     if len(last_date_gsm_df)>0:
-        reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>(last_date_gsm_df.iloc[0,0]))]
+        reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>pd.to_datetime(last_date_gsm_df.iloc[0,0]))]
     reviews_gsm_df=misc_handler.sentiment_analysis_df(reviews_gsm_df)
     all_reviews_reddit=misc_handler.return_all_reddit_df(specs_df,reddit)
     all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
     last_date_reddit_df=return_max_date_reddit(product_id,schema_name,db_session)
     if len(last_date_reddit_df)>0:
-        all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>(last_date_reddit_df.iloc[0,0]))]
+        all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>pd.to_datetime(last_date_reddit_df.iloc[0,0]))]
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)

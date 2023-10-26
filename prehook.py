@@ -114,11 +114,6 @@ def create_sql_staging_tables_sales(db_session,driver):
         print(error)
 
 
-
-
-
-
-
 def execute_prehook(sql_command_directory_path = './SQL_Commands'):
     print("Prehook")
     step_name = ""
@@ -132,12 +127,12 @@ def execute_prehook(sql_command_directory_path = './SQL_Commands'):
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         db_session = create_connection()
-            #     start_time = datetime.datetime.now()
+        start_time = datetime.datetime.now()
         step_name=1
-        print("step:",step_name)
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," executing prehook sql file")
         execute_prehook_sql(db_session, sql_command_directory_path) 
         step_name=2
-        print("step:",step_name)
+        print("step:",step_name," ")
         create_sql_staging_tables_reddit(db_session, driver,reddit)
         step_name=3
         print("step:",step_name)
