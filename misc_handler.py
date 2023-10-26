@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import praw
-from lookups import brands_url,page_limit,product_url,sales_url
+from lookups import brands_url,page_limit,product_url,sales_url,staging_tables
 from time import sleep
 from datetime import datetime
 import pandas as pd
@@ -792,6 +792,13 @@ def return_sales_per_year(driver):
     combined_df = pd.concat(all_dataframes, ignore_index=True)
     driver.quit()
     return combined_df
+
+def return_stg_tables_as_list():
+    tables=[]
+    for table in staging_tables:
+        tables.append(table.value)
+    return tables
+
 
 
     
