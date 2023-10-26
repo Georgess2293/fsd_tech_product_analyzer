@@ -40,19 +40,19 @@
 ### User Stories
 
   
-1. As a Data Engineer:
-	I want to automatically scrape various and new released products from reputable sources with the latest reviews so that our dataset is always up-to-date.
-	I want to integrate different data sources seamlessly.
-	Ensure fault tolerance in our data pipelines, so that potential failures don't interrupt our analyses.
-2. As an Analyst:
-	I want to query the database.
-	I want to view the sentiment analysis results to understand users sentiment about different brands and products.
+1. As a Data Engineer:<br>
+	I want to automatically scrape various and new released products from reputable sources with the latest reviews so that our dataset is always up-to-date. <br>
+	I want to integrate different data sources seamlessly.<br>
+	I want to ensure there is fault tolerance in our data pipelines, so that potential failures don't interrupt our analyses.
+2. As an Analyst: <br>
+	I want to query the database.<br>
+	I want to view the sentiment analysis results to understand users sentiment about different brands and products.<br>
 	I want to visualize the data using PowerBI.
-3. As a Tech Influencer:
-	I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.
-	I need the ability to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.
-4. As a Smartphone Shop Owner:
-	I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies..
+3. As a Tech Influencer:<br>
+	I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.<br>
+	I want to be able to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.<br>
+4. As a Smartphone Shop Owner:<br>
+	I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies.<br>
 	I want to track product performance and customer reviews to ensure that the products I offer align with market demands.
 
 
@@ -115,8 +115,8 @@
 
 ## Frontend
 
-Interactive PowerBI Dashboard:
-A central dashboard where viewers can view:
+Interactive PowerBI Dashboard:<br>
+A central dashboard where viewers can check:
 
 1. Market Indicator: Graphs, charts and visualizations displaying yearly sales of manufacturers.
 2. Sentiment Analysis: Representations of consumers sentiment about different products over time through pie charts and bars.
@@ -133,7 +133,7 @@ A central dashboard where viewers can view:
 ## Backend
 
 1. Web scraping & Automation.
-2. ETL Pipeline: using python and pandas, raw data is extracted, transformed into a usable format and loaded into postgreSQL database.
+2. ETL Pipeline: using Python and pandas, raw data is extracted, transformed into a usable format and loaded into PostgreSQL database.
 3. Database: Schema Design - Indexing - Data Integrity.
 
 <br>
