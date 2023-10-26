@@ -629,7 +629,7 @@ def ntlk_sentiment_analysis(review,analyzer):
     return sentiment
 
 def sentiment_analysis_df(df):
-    nltk.download("vader_lexicon")
+    #nltk.download("vader_lexicon")
     analyzer = SentimentIntensityAnalyzer()
     return_df=df.copy()
     #return_df['Sentiment_textblob']=df['Review_Text'].apply(lambda x:sentiment_analysis(x))

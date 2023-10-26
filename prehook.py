@@ -132,20 +132,20 @@ def execute_prehook(sql_command_directory_path = './SQL_Commands'):
         print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," executing prehook sql file")
         execute_prehook_sql(db_session, sql_command_directory_path) 
         step_name=2
-        print("step:",step_name," ")
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating reviews staging table")
         create_sql_staging_tables_reddit(db_session, driver,reddit)
         step_name=3
-        print("step:",step_name)
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating reviews 2nd staging table")
         create_sql_staging_tables_gsm_reviews(db_session, driver)
         step_name=4
-        print("step:",step_name)
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating specs staging table")
         create_sql_staging_tables_specs(db_session, driver)
         step_name=5
         print("step:",step_name)
         create_sql_staging_tables_prices(db_session, driver)
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating prices staging table")
         #create_sql_staging_tables_sales(db_session,driver)
-    #     end_time = datetime.datetime.now()
-    #     misc_handler.insert_into_etl_logging_table(DestinationName.Datawarehouse, db_session, PreHookSteps.CREATE_SQL_STAGING, start_time, end_time)
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," prehook finished")
         close_connection(db_session)
         driver.quit()
     except Exception as error:
