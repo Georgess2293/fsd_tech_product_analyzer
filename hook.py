@@ -28,6 +28,7 @@ def execute_hook_sql(db_session, sql_command_directory_path):
                 sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
                 execute_query(db_session, sql_query)
 
+
 def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all_specs=None,all_reviews=None):
     all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
     all_specs=cleaning_dfs_handler.clean_specs(all_specs)
@@ -46,31 +47,68 @@ def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all
     for insert in insert_stmt_reviews_reddit:
         execute_query(db_session=db_session,query=insert)
 
-def create_etl_last_date(schema_name , db_session):
+
+def create_etl_last_date_gsm(schema_name , db_session):
     query = f"""
-        CREATE TABLE IF NOT EXISTS {schema_name}.etl_last_date
+        CREATE TABLE IF NOT EXISTS {schema_name}.etl_last_date_gsm
         (
-            product_id INT,
+            product_id INT UNIQUE,
             etl_last_date DATE
         )
         """
     execute_query(db_session, query)
 
-def insert_into_last_date(schema_name,db_session):
-    query=f"""
-        INSERT INTO {schema_name}.etl_last_date (product_id,etl_last_date)
-        SELECT
-            product_id,
-            MAX(review_date)
-        FROM product_analyzer.fact_reviews
-        GROUP BY product_id
+def create_etl_last_date_reddit(schema_name , db_session):
+    query = f"""
+        CREATE TABLE IF NOT EXISTS {schema_name}.etl_last_date_reddit
+        (
+            product_id INT UNIQUE,
+            etl_last_date DATE
+        )
         """
     execute_query(db_session, query)
     
-def return_last_date(product_id,schema_name,db_session):
-    query=f"""SELECT etl_last_date FROM {schema_name}.etl_last_date WHERE product_id={product_id}"""
+
+def return_max_date_gsm(product_id,schema_name,db_session):
+    query=f"""SELECT etl_last_date FROM {schema_name}.etl_last_date_gsm WHERE product_id={product_id}"""
     return_df=return_data_as_df(query,input_type=InputTypes.SQL,db_session=db_session)
     return return_df
+
+def return_max_date_reddit(product_id,schema_name,db_session):
+    query=f"""SELECT etl_last_date FROM {schema_name}.etl_last_date_reddit WHERE product_id={product_id}"""
+    return_df=return_data_as_df(query,input_type=InputTypes.SQL,db_session=db_session)
+    return return_df
+
+def update_last_date_gsm(schema_name,db_session):
+    query=f"""
+        INSERT INTO {schema_name}.etl_last_date_gsm (product_id,etl_last_date)
+        SELECT
+            product_id,
+            MAX(stg.date) AS max_date
+        FROM product_analyzer.stg_gsm_reviews1 AS stg
+        GROUP BY stg.product_id
+        ON CONFLICT (product_id)
+        DO UPDATE SET
+            etl_last_date = EXCLUDED.etl_last_date
+
+        """
+    execute_query(db_session, query)
+
+def update_last_date_reddit(schema_name,db_session):
+    query=f"""
+        INSERT INTO {schema_name}.etl_last_date_reddit (product_id,etl_last_date)
+        SELECT
+            product_id,
+            MAX(stg.date) AS max_date
+        FROM product_analyzer.stg_reddit_reviews1 AS stg
+        GROUP BY stg.product_id
+        ON CONFLICT (product_id)
+        DO UPDATE SET
+            etl_last_date = EXCLUDED.etl_last_date
+
+        """
+    execute_query(db_session, query)
+
 
 
 def insert_into_stg(db_session,driver,url,reddit,schema_name):
@@ -79,14 +117,15 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
     reviews_gsm_df=cleaning_dfs_handler.clean_reviews_gsm(reviews_gsm_df)
     specs_df=cleaning_dfs_handler.clean_specs(specs_df)
     product_id=specs_df.iloc[0,0]
-    last_date_df=return_last_date(product_id,schema_name,db_session)
-    if len(last_date_df)>0:
-        reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
+    last_date_gsm_df=return_max_date_gsm(product_id,schema_name,db_session)
+    if len(last_date_gsm_df)>0:
+        reviews_gsm_df=reviews_gsm_df.loc[(reviews_gsm_df['Date']>(last_date_gsm_df.iloc[0,0]))]
     reviews_gsm_df=misc_handler.sentiment_analysis_df(reviews_gsm_df)
     all_reviews_reddit=misc_handler.return_all_reddit_df(specs_df,reddit)
     all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
-    if len(last_date_df)>0:
-        all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>pd.to_datetime(last_date_df.iloc[0,0]))]
+    last_date_reddit_df=return_max_date_reddit(product_id,schema_name,db_session)
+    if len(last_date_reddit_df)>0:
+        all_reviews_reddit=all_reviews_reddit.loc[(all_reviews_reddit['Date']>(last_date_reddit_df.iloc[0,0]))]
     all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)
@@ -116,8 +155,6 @@ def insert_sales_stg(db_session,driver):
     except Exception as error:
         print(error)
 
-    
-
 
 
 def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
@@ -131,12 +168,14 @@ def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
     db_session = create_connection()
-    # create_etl_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    # insert_into_last_date(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    create_etl_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    create_etl_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
     url=misc_handler.return_url_gsm_search(input_text,driver)
     insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
     driver.quit()
     execute_hook_sql(db_session, sql_command_directory_path)
+    update_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    update_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
 
     close_connection(db_session)
     
