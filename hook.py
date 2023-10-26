@@ -158,6 +158,7 @@ def insert_sales_stg(db_session,driver):
 
 
 def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
+    print("Hook")
     reddit=praw.Reddit(
             client_id="A99udy2Ex7RaoBzW5O3Gdw",
             client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",

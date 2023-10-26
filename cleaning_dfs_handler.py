@@ -48,13 +48,16 @@ def clean_specs(df):
 
 def clean_prices(df):
     all_prices=df.copy()
+    all_prices.columns = all_prices.columns.astype(str)
     columns=list(all_prices.columns)
     for col in columns:
-        if 'Unnamed' in col:
+        if isinstance(col, str) and 'Unnamed' in col:
             all_prices.drop(columns=col, inplace=True)
-        if 'Tests' in col:
+        if isinstance(col, str) and 'Tests' in col:
             all_prices.drop(columns=col, inplace=True)
-        if 'Misc' in col:
+        if isinstance(col, str) and 'Misc' in col:
+            all_prices.drop(columns=col, inplace=True)
+        if isinstance(col, str) and 'nan' in col:
             all_prices.drop(columns=col, inplace=True)
     all_prices.columns=all_prices.columns.str.replace(" ","_")
     columns=['product_id']
