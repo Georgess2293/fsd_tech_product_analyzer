@@ -10,4 +10,4 @@ def etl_job(input_text):
     prehook.execute_prehook()
     hook.execute_hook(input_text)
     posthook.execute_posthook()
-    print("Start time: ",datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
+    print("End time: ",datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"))
