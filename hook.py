@@ -1,5 +1,5 @@
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_insert_into_sql_statement_from_df
-from lookups import InputTypes, IncrementalField,ETLStep,DESTINATION_SCHEMA
+from lookups import InputTypes,ETLStep,DESTINATION_SCHEMA
 from datetime import datetime
 # from prehook import return_tables_by_schema, return_lookup_items_as_dict, execute_sql_folder
 import misc_handler
