@@ -12,7 +12,7 @@ def truncate_staging_tables(schema_name, table_list, db_session):
 def execute_posthook():
     print("posthook")
     db_session = create_connection()
-    tables = misc_handler.return_staging_tables_as_list()
+    tables = misc_handler.return_stg_tables_as_list()
     truncate_staging_tables(lookups.DESTINATION_SCHEMA.DESTINATION_NAME.value,tables,db_session)
     close_connection(db_session)
 
