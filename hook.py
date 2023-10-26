@@ -163,17 +163,30 @@ def execute_hook(input_text,sql_command_directory_path = './SQL_Commands'):
             client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
             user_agent="my-tech"
         )
+    
     driver = webdriver.Chrome()
     # options=Options()
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
     db_session = create_connection()
+    step_name=1
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating etl last update table 1")
     create_etl_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    step_name=2
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating etl last update table 2")
     create_etl_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+    step_name=3
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," returning product url")
     url=misc_handler.return_url_gsm_search(input_text,driver)
+    step_name=4
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," inserting staging tables")
     insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
     driver.quit()
+    step_name=6
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," execute sql hook commands")
     execute_hook_sql(db_session, sql_command_directory_path)
+    step_name=6
+    print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name,"updating last date")
     update_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
     update_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
 
