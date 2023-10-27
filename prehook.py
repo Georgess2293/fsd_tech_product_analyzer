@@ -80,7 +80,7 @@ def create_sql_staging_tables_specs(db_session, driver):
         print(error)
 
 def create_sql_staging_tables_prices(db_session, driver):
-    
+    try:  
         columns=['product_id', '_128GB_8GB_RAM', '_128GB_6GB_RAM', '_256GB_8GB_RAM',
        '_128GB_12GB_RAM', '_512GB_16GB_RAM', '_256GB_12GB_RAM', '_32GB_3GB_RAM',
        '_64GB_4GB_RAM', '_128GB_4GB_RAM', '_512GB_12GB_RAM', '_64GB_6GB_RAM',
@@ -102,8 +102,8 @@ def create_sql_staging_tables_prices(db_session, driver):
         create_stmt = return_create_statement_from_df(staging_prices,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
         #create_sql_staging_table_index(db_session, 'dw_reporting', dst_table, columns[0])
-    # except Exception as error:
-    #     print(error)
+    except Exception as error:
+       print(error)
 
 def create_sql_staging_tables_sales(db_session,driver):
     try:
