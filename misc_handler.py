@@ -256,7 +256,7 @@ def extract_reddit_comments(search_query, reddit,num_results=3):
     return df
   
 
-def return_all_specs_df(url)
+def return_all_specs_df(url):
     driver = webdriver.Chrome()
     options = Options()
     options.add_argument('--headless')
