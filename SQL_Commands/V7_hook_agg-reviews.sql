@@ -107,7 +107,6 @@ WHERE (dim_products.product_id, reviews.review_date) NOT IN (
 )
 GROUP BY dim_products.product_id, reviews.review_date;
 
--- Step 2: Update existing records with new aggregates
 UPDATE product_analyzer.agg_reviews AS agg
 SET
     total_reviews = subquery.total_reviews,

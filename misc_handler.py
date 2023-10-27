@@ -68,7 +68,6 @@ def extract_reviews_from_page(url,driver):
         name = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="body"]/div/div[1]/div/div[1]/h1'))).text
     except:
         name=None
-    # Loop through the review elements to extract user name, rating, and date
     review_elements = driver.find_elements(By.CLASS_NAME, 'user-thread')
     reviews_data = []
     for review_element in review_elements:
@@ -107,9 +106,6 @@ def extract_all_reviews(url,driver):
         current_url=current+'p'+str(page_number)+'.php'
 
         reviews_on_page = extract_reviews_from_page(current_url,driver)
-    
-        
-        # If there are no more reviews on the page, exit the loop
         if not reviews_on_page:
             break
 
@@ -121,13 +117,10 @@ def extract_all_reviews(url,driver):
     
 
 def scrape_amazon_reviews_df(search_query):
-    # Configure Selenium to use a web driver (e.g., ChromeDriver)
     driver = webdriver.Chrome()
     options=Options()
     #options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
-
-    # Navigate to Amazon's search results page
     base_url = 'https://www.amazon.com/'
     driver.get(base_url)
     #search_box = driver.find_element(By.ID, 'twotabsearchtextbox')
@@ -138,79 +131,55 @@ def scrape_amazon_reviews_df(search_query):
     for retry in range(max_retries):
         try:
             search_box = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'twotabsearchtextbox')))
-            break  # Exit the loop if the element is found
+            break  
         except TimeoutException:
             if retry == max_retries - 1:
-                # Handle the timeout after maximum retries
                 print("Element not found after maximum retries.")
                 break
             else:
                 print(f"Retry {retry + 1}: Element not found. Retrying...")
     search_box.send_keys(search_query)
     search_box.send_keys(Keys.RETURN)
-    sleep(2)  # Adjust the sleep time as needed to allow the page to load
-
-    # Find and extract all product links on the search results page
+    sleep(2)  
     product_links = driver.find_elements(By.CSS_SELECTOR, '.s-result-item a.a-link-normal.s-no-outline')
     product_urls = [link.get_attribute('href') for link in product_links]
 
-    # Initialize a list to store reviews
+
     reviews_data = []
 
-    # Loop through product links and extract reviews
     for product_url in product_urls:
         driver.get(product_url)
-        sleep(2)  # Adjust the sleep time as needed to allow the page to load
+        sleep(2)  
 
         try:
-            # Extract the product name
             product_name = driver.find_element(By.ID, 'productTitle').text
-
-            # Check if the product name contains the filter string (case-insensitive)
-            # if search_query.lower() in product_name.lower():
             if product_name.lower().startswith(search_query.lower()):
-                # Click on the "See all reviews" link (if available)
                 try:
                     see_all_reviews_link = driver.find_element(By.PARTIAL_LINK_TEXT, 'See more reviews')
                     see_all_reviews_link.click()
-                    sleep(2)  # Adjust the sleep time as needed to allow the reviews page to load
+                    sleep(2)  
                     sleep(2)
                     sort_by_dropdown = driver.find_element(By.ID, 'sort-order-dropdown')
-
-                    # Create an ActionChains object to perform the click action
                     actions = ActionChains(driver)
                     actions.move_to_element(sort_by_dropdown).click().perform()
-
-                    # Select "Most recent" from the sorting options
                     most_recent_option = driver.find_element(By.PARTIAL_LINK_TEXT, 'Most recent')
-
-                    # Create a new ActionChains object to click the "Most recent" option
                     actions = ActionChains(driver)
                     actions.move_to_element(most_recent_option).click().perform()
                     sleep(2)
                     while True:
-                        # Extract and store all reviews on the page
                         review_elements = driver.find_elements(By.CSS_SELECTOR, '.a-section.review .a-section.celwidget')
 
-                        # Loop through review elements and extract user name, rating, title, date, country, and review text
+                        
                         for review_element in review_elements:
-                            # Extract user name
                             user_name_element = review_element.find_element(By.CSS_SELECTOR, '.a-profile')
                             user_name = user_name_element.text
-
-                            # Extract star rating as an integer (1 to 5 stars)
                             star_rating_element = review_element.find_elements(By.CSS_SELECTOR, '.a-icon-star .a-icon-alt')
                             star_rating = 0
                             if star_rating_element:
-                                # Extract the star rating from the alt text of the star icons
                                 star_rating_text = star_rating_element[0].get_attribute('innerHTML')
                                 star_rating =star_rating_text.split(' ')[0]
-
-                            # Extract review title
                             review_title_element = review_element.find_element(By.CSS_SELECTOR, '.review-title')
                             review_title = review_title_element.text
-
-                            # Extract review date and country
                             review_date_element = review_element.find_element(By.CSS_SELECTOR, '.review-date')
                             review_date_text = review_date_element.text
                             review_date_parts = review_date_text.split('on')
@@ -220,12 +189,8 @@ def scrape_amazon_reviews_df(search_query):
                             else:
                                 review_date = review_date_text.strip()
                                 country = ""
-
-                            # Extract review text
                             review_text_element = review_element.find_element(By.CSS_SELECTOR, '.review-text-content')
                             review_text = review_text_element.text
-
-                            # Store the extracted data in a dictionary
                             review_data = {
                                 'User Name': user_name,
                                 'Rating': star_rating,
@@ -239,12 +204,10 @@ def scrape_amazon_reviews_df(search_query):
 
                         next_button = driver.find_element(By.XPATH, '//*[@id="cm_cr-pagination_bar"]/ul/li[2]')
                         if 'a-disabled' in next_button.get_attribute('class'):
-                            # If the "Next" button is disabled, break the loop
                             break
                         else:
-                            # Click the "Next" button to navigate to the next page of reviews
                             next_button.click()
-                            sleep(2)  # Adjust the sleep time as needed
+                            sleep(2)  
                                             
                 except Exception as e:
                             print(f"No 'See all reviews' link found for product: {product_name}")
@@ -252,7 +215,6 @@ def scrape_amazon_reviews_df(search_query):
         except Exception as e:
                 print(f"Error processing product: {e}")
 
-    # Close the web driver
     driver.quit()
     reviews_df=pd.DataFrame(reviews_data)
 
@@ -265,27 +227,24 @@ def scrape_amazon_reviews_df(search_query):
 # )
 
 def extract_reddit_comments(search_query, reddit,num_results=3):
-    # Initialize lists to store data
     post_titles=[]
     usernames = []
     dates = []
     comments = []
 
-    # Search for posts related to the search query
+ 
     search_results = reddit.subreddit("all").search(search_query, limit=num_results)
 
     for submission in search_results:
-        # Check if the submission title contains the search query
         if search_query.lower() in submission.title.lower():
             post_title = submission.title
-            # Extract comments from the submission
             submission.comments.replace_more(limit=None)
             for comment in submission.comments.list():
                 post_titles.append(post_title)
                 usernames.append(comment.author)
                 dates.append(comment.created_utc)
                 comments.append(comment.body)
-       # Create a Pandas DataFrame
+
     data = {
         'Post Title': post_titles,
         'User Name': usernames,
@@ -297,17 +256,12 @@ def extract_reddit_comments(search_query, reddit,num_results=3):
     return df
   
 
-def return_all_specs_df(url):
-    # Initialize the Chrome web driver
+def return_all_specs_df(url)
     driver = webdriver.Chrome()
     options = Options()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
-
-    # Navigate to the provided URL
     driver.get(url)
-
-    # Initialize an empty DataFrame to store the results
     all_results = pd.DataFrame()
 
     # Find and extract the list of brands
@@ -319,13 +273,8 @@ def return_all_specs_df(url):
         brand_urls.append(brand_url)
     for brand_link in brand_urls:
         print(f"Extracting data for brand:  ({brand_urls})")
-
-        # Navigate to the brand page
         driver.get(brand_link)
-
-        # Find and extract the list of product links for the current brand
         product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
-        #return product_links
         product_urls=[]
         for product_link in product_links[:3]:
             # Get the URL for the product page
@@ -334,8 +283,6 @@ def return_all_specs_df(url):
         for product_link in product_urls:
             print(f"Extracting data for product:({product_urls})")
             # sleep(1)
-
-            # Extract product specifications and add them to the results DataFrame
             product_data = return_specs_df(product_link,driver)
             #all_results = all_results.append(product_data, ignore_index=True)
             all_results=pd.concat([all_results,product_data],axis=0,ignore_index=True)
@@ -345,19 +292,14 @@ def return_all_specs_df(url):
 
 
 def return_all_reviews_df(url):
-    # Initialize the Chrome web driver
     driver = webdriver.Chrome()
     options = Options()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
 
-    # Navigate to the provided URL
+   
     driver.get(url)
-
-    # Initialize an empty DataFrame to store the results
     all_results = pd.DataFrame()
-
-    # Find and extract the list of brands
     brand_links = driver.find_elements(By.CSS_SELECTOR, 'div.st-text a')
     brand_urls=[]
     for brand_link in brand_links[:3]:
@@ -366,16 +308,10 @@ def return_all_reviews_df(url):
         brand_urls.append(brand_url)
     for brand_link in brand_urls:
         print(f"Extracting data for brand:  ({brand_urls})")
-
-        # Navigate to the brand page
         driver.get(brand_link)
-
-        # Find and extract the list of product links for the current brand
         product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
-        #return product_links
         product_urls=[]
         for product_link in product_links[:3]:
-            # Get the URL for the product page
             product_url = product_link.get_attribute('href')
             product_urls.append(product_url)
         for product_link in product_urls:
@@ -417,38 +353,24 @@ def return_all_amazon_df(df):
 
 
 def return_all_specs_update_df(url):
-    # Initialize the Chrome web driver
     driver = webdriver.Chrome()
     options = Options()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
 
-    # Navigate to the provided URL
     driver.get(url)
-
-    # Initialize an empty DataFrame to store the results
     all_results = pd.DataFrame()
-
-    # Find and extract the list of brands
     brand_links = driver.find_elements(By.CSS_SELECTOR, 'div.st-text a')
     brand_urls=[]
     for brand_link in brand_links[:3]:
-        # Get the URL for the brand page
         brand_url = brand_link.get_attribute('href')
         brand_urls.append(brand_url)
     for brand_link in brand_urls:
         print(f"Extracting data for brand:  ({brand_urls})")
-
-
-        # Navigate to the brand page
         driver.get(brand_link)
-
-        # Find and extract the list of product links for the current brand
         product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
-        #return product_links
         product_urls=[]
         for product_link in product_links[:3]:
-            # Get the URL for the product page
             product_url = product_link.get_attribute('href')
             product_urls.append(product_url)
         page_numbers = driver.find_elements(By.CSS_SELECTOR, 'div.nav-pages a')
@@ -459,18 +381,14 @@ def return_all_specs_update_df(url):
             pages.append(page_url)
         for page in pages:
             driver.get(page)
-            sleep(2)  # Adjust sleep time if needed
+            sleep(2)  
             product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
             phone_urls = [product_link.get_attribute('href') for product_link in product_links]
             product_urls.extend(phone_urls)
-        #return product_urls
         for product_link in product_urls[:3]:
             print(f"Extracting data for product:({product_urls})")
             # sleep(1)
-
-            # Extract product specifications and add them to the results DataFrame
             product_data = return_specs_df(product_link,driver)
-            #all_results = all_results.append(product_data, ignore_index=True)
             all_results=pd.concat([all_results,product_data],axis=0,ignore_index=True)
     driver.quit()
 
@@ -479,33 +397,22 @@ def return_all_specs_update_df(url):
 
 
 def return_stg_specs_df(driver):
-    # Initialize the Chrome web driver
     # driver = webdriver.Chrome()
     # options = Options()
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
-
-    # Navigate to the provided URL
     # driver.get(url)
 
-    # Initialize an empty DataFrame to store the results
     all_results = pd.DataFrame()
     all_reviews=pd.DataFrame()
 
     for brand_link in brands_url:
         print(f"Extracting data for brand:  ({brand_link.name})")
-
-
-        # Navigate to the brand page
         driver.get(brand_link.value)
-
-        # Find and extract the list of product links for the current brand
         product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
-        #return product_links
         product_urls=[]
         try:
             for product_link in product_links[:1]:
-                # Get the URL for the product page
                 product_url = product_link.get_attribute('href')
                 product_urls.append(product_url)
             # page_numbers = driver.find_elements(By.CSS_SELECTOR, 'div.nav-pages a')
@@ -524,10 +431,8 @@ def return_stg_specs_df(driver):
                 print(f"Extracting data for product:({product_urls})")
                 # sleep(1)
 
-                # Extract product specifications and add them to the results DataFrame
                 product_data = return_specs_df(product_link,driver)
                 product_reviews=extract_all_reviews(product_link,driver)
-                #all_results = all_results.append(product_data, ignore_index=True)
                 all_results=pd.concat([all_results,product_data],axis=0,ignore_index=True)
                 all_reviews=pd.concat([all_reviews,product_reviews],axis=0,ignore_index=True)
         except:
@@ -548,30 +453,26 @@ def return_stg_specs_exception_df(driver):
         # driver = webdriver.Chrome(options=options)
         print(f"Extracting data for brand: ({brand_link.name})")
 
-        # Initialize a variable for the number of retries
         max_retries = 3
         for retry in range(max_retries):
             try:
                 driver.get(brand_link.value)
-                break  # Exit the loop if the operation succeeds
+                break  
             except WebDriverException:
                 if retry == max_retries - 1:
-                    # Handle the WebDriverException after maximum retries
                     print("WebDriverException: Maximum retries reached.")
                     return all_results, all_reviews
                 else:
                     print(f"WebDriverException: Retrying... (Retry {retry + 1})")
-                    sleep(2)  # Add a delay before retry
+                    sleep(2)  
 
-        product_urls = []  # Create an empty list to store product URLs
+        product_urls = []  
         try:
-            # Extract product URLs for the current brand
             product_links = driver.find_elements(By.CSS_SELECTOR, 'div.makers ul li a')
             for product_link in product_links:
                 product_url = product_link.get_attribute('href')
                 product_urls.append(product_url)
 
-            # Iterate through product URLs
             for product_url in product_urls[5:16]:
                 print(f"Extracting data for product: ({product_url})")
                 product_data = return_specs_df(product_url, driver)
@@ -581,7 +482,7 @@ def return_stg_specs_exception_df(driver):
         
         except:
             # driver.quit()
-            continue  # Handle any exceptions and continue to the next brand
+            continue 
             
         # driver.quit()
     driver.quit()
@@ -591,12 +492,9 @@ def return_stg_specs_exception_df(driver):
 
 def sentiment_analysis(review_text):
     text_blob = TextBlob(review_text)
-
-# Perform sentiment analysis
     polarity = text_blob.sentiment.polarity  # Polarity ranges from -1 (negative) to 1 (positive)
     subjectivity = text_blob.sentiment.subjectivity  # Subjectivity ranges from 0 (objective) to 1 (subjective)
 
-# Determine sentiment based on polarity
     if polarity > 0:
         sentiment = "Positive"
     elif polarity < 0:
@@ -608,14 +506,8 @@ def sentiment_analysis(review_text):
 
 
 def ntlk_sentiment_analysis(review,analyzer):
-# Initialize the VADER sentiment intensity analyzer
     # nltk.download("vader_lexicon")
     #analyzer = SentimentIntensityAnalyzer()
-
-    # Example sentences for sentiment analysis
-  
-
-    # Perform sentiment analysis on each sentence
 
     sentiment_scores = analyzer.polarity_scores(review)
     compound_score = sentiment_scores["compound"]
@@ -719,14 +611,8 @@ def convert_currency(currency_value):
 
     if not pd.notna(currency_value):
         return None
-
-    # Extract the currency symbol
     currency_symbol = currency_value[0]
-
-    # Remove the currency symbol, commas, and spaces, then convert to float
     amount = float(currency_value[1:].replace(',', '').strip())
-
-    # Convert to USD using the exchange rate
     usd_amount = amount * exchange_rates.get(currency_symbol, 1.0)
     return usd_amount
 
