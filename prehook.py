@@ -1,6 +1,6 @@
 import os
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_create_statement_from_df
-from lookups import ErrorHandling,  InputTypes, ETLStep, DESTINATION_SCHEMA,first_time
+from lookups import ErrorHandling,  InputTypes, ETLStep, DESTINATION_SCHEMA,first_time,sql_files
 from logging_handler import show_error_message
 import misc_handler
 from cleaning_dfs_handler import clean_reviews_gsm,clean_reviews_reddit,clean_specs,clean_prices,clean_sales
@@ -15,20 +15,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
-# append the execute sql folder
-# execute_sql_prehook
-# execute_sql_hook
+
 
 def execute_prehook_sql(db_session, sql_command_directory_path):
-    sql_files =misc_handler.retreive_sql_files(sql_command_directory_path)
-    for sql_file in sql_files:
-        if str(sql_file.split('-')[0].split('_')[1]) == ETLStep.PRE_HOOK.value:
+        for sql_file in sql_files.Prehook.value:
             with open(os.path.join(sql_command_directory_path,sql_file), 'r') as file:
                 sql_query = file.read()
                 sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
                 execute_query(db_session, sql_query)
-                
-        
+                   
 
 def create_sql_staging_table_index(db_session,source_name, table_name, index_val):
     query = f"CREATE INDEX IF NOT EXISTS idx_{table_name}_{index_val} ON {source_name}.{table_name} ({index_val});"
