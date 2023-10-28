@@ -529,12 +529,6 @@ def sentiment_analysis_df(df):
     return return_df
 
 
-def retreive_sql_files(sql_command_directory_path):
-    sql_files = [sqlfile for sqlfile in os.listdir(sql_command_directory_path) if sqlfile.endswith('.sql')]
-    sorted_sql_files =  sorted(sql_files)
-    return sorted_sql_files
-
-
 def return_prices_df(url,driver):
     return_df=pd.DataFrame()
     driver.get(url)
