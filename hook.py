@@ -1,5 +1,5 @@
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_insert_into_sql_statement_from_df
-from lookups import InputTypes,ETLStep,DESTINATION_SCHEMA
+from lookups import InputTypes,ETLStep,DESTINATION_SCHEMA,sql_files
 from datetime import datetime
 # from prehook import return_tables_by_schema, return_lookup_items_as_dict, execute_sql_folder
 import misc_handler
@@ -19,19 +19,8 @@ from selenium.webdriver.common.action_chains import ActionChains
     
 
 
-def execute_hook_sql(db_session, sql_command_directory_path):
-    sql_files =misc_handler.retreive_sql_files(sql_command_directory_path)
-    for sql_file in sql_files:
-        if str(sql_file.split('-')[0].split('_')[1]) == ETLStep.HOOK.value:
-            with open(os.path.join(sql_command_directory_path,sql_file), 'r') as file:
-                sql_query = file.read()
-                sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
-                execute_query(db_session, sql_query)
-
-def execute_hook_sql_new(db_session, sql_command_directory_path):
-    sql_files =misc_handler.retreive_sql_files(sql_command_directory_path)
-    for sql_file in sql_files:
-        if str(sql_file.split('-')[0].split('_')[1]) == ETLStep.HOOK.value:
+def execute_hook_sql(db_session,sql_command_directory_path):
+    for sql_file in sql_files.Hook.value:
             with open(os.path.join(sql_command_directory_path,sql_file), 'r') as file:
                 sql_query = file.read()
                 sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)

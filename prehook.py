@@ -116,15 +116,15 @@ def create_sql_staging_tables_sales(db_session,driver):
         print(error)
 
 
-def execute_prehook(sql_command_directory_path = './SQL_Commands'):
+def execute_prehook(reddit,sql_command_directory_path = './SQL_Commands'):
     print("Prehook")
     step_name = ""
     try:
-        reddit=praw.Reddit(
-            client_id="A99udy2Ex7RaoBzW5O3Gdw",
-            client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
-            user_agent="my-tech"
-        )
+        # reddit=praw.Reddit(
+        #     client_id="A99udy2Ex7RaoBzW5O3Gdw",
+        #     client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
+        #     user_agent="my-tech"
+        # )
         options=Options()
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)

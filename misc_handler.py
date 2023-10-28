@@ -534,15 +534,6 @@ def retreive_sql_files(sql_command_directory_path):
     sorted_sql_files =  sorted(sql_files)
     return sorted_sql_files
 
-def retreive_sql_files_sorted(sql_command_directory_path):
-    i=1
-    sql_files_sorted=[]
-    sql_files = [str(sqlfile.split('_',1)[1]) for sqlfile in os.listdir(sql_command_directory_path) if sqlfile.endswith('.sql')]
-    for sql_file in sql_files:
-        sql_files_sorted.append(f"V{i}_{sql_file}")
-        i+=1
-    return sql_files_sorted
-
 
 def return_prices_df(url,driver):
     return_df=pd.DataFrame()
