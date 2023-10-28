@@ -2,6 +2,7 @@ import os
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_create_statement_from_df
 from lookups import ErrorHandling,  InputTypes, ETLStep, DESTINATION_SCHEMA,first_time,sql_files
 from logging_handler import show_error_message
+import logging
 import misc_handler
 from cleaning_dfs_handler import clean_reviews_gsm,clean_reviews_reddit,clean_specs,clean_prices,clean_sales
 import datetime
@@ -112,40 +113,38 @@ def create_sql_staging_tables_sales(db_session,driver):
 
 
 def execute_prehook(reddit,sql_command_directory_path = './SQL_Commands'):
-    print("Prehook")
-    step_name = ""
     try:
-        # reddit=praw.Reddit(
-        #     client_id="A99udy2Ex7RaoBzW5O3Gdw",
-        #     client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
-        #     user_agent="my-tech"
-        # )
+        logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        logger=logging.getLogger(__name__)
         options=Options()
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         db_session = create_connection()
-        step_name=1
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," executing prehook sql file")
+        logger.info("Executing prehook sql file")
+        #print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," executing prehook sql file")
         execute_prehook_sql(db_session, sql_command_directory_path) 
-        step_name=2
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating reviews staging table")
+        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating reviews staging table")
+        logger.info("Creating reviews staging table")
         create_sql_staging_tables_reddit(db_session, driver,reddit)
-        step_name=3
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating reviews 2nd staging table")
+        #print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating reviews 2nd staging table")
+        logger.info("Creating reviews 2nd staging table")
         create_sql_staging_tables_gsm_reviews(db_session, driver)
-        step_name=4
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating specs staging table")
+        #print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating specs staging table")
+        logger.info("Creating specs staging table")
         create_sql_staging_tables_specs(db_session, driver)
-        step_name=5
-        print("step:",step_name)
+        logger.info("Creating prices staging table")
         create_sql_staging_tables_prices(db_session, driver)
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating prices staging table")
+        #print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating prices staging table")
         #create_sql_staging_tables_sales(db_session,driver)
-        print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," prehook finished")
+        # print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," prehook finished")
         close_connection(db_session)
         driver.quit()
+        logger.info("Prehook success")
     except Exception as error:
         suffix = str(error)
         error_prefix = ErrorHandling.PREHOOK_SQL_ERROR
         show_error_message(error_prefix.value, suffix)
-        raise Exception(f"Important Step Failed step = {step_name}")
+        raise Exception(f"Important Step Failed step")
