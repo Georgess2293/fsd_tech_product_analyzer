@@ -69,11 +69,11 @@
 
   
 
-| Bins Map screen | Dashboard screen | Bin Management screen |
 
-| ---| ---| ---|
 
-| ![Landing](./readme/wireframes/web/map.png) | ![Admin Dashboard](./readme/wireframes/web/dashboard.png) | ![User Management](./readme/wireframes/web/bin_crud.png) |
+
+
+ ![Landing](./readme/etl_logger.png) 
 
   
   
@@ -90,12 +90,6 @@
 
   
   
-
-| Announcements screen | Login screen | Landing screen |
-
-| ---| ---| ---|
-
-| ![Map](readme/mockups/web/announcements.png)| ![Map](./readme/mockups/web/login.png)| ![Map](./readme/mockups/web/landing.png)|
 
 <br><br>
 

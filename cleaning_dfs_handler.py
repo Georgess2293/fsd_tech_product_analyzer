@@ -38,7 +38,7 @@ def clean_reviews_gsm(df):
 def clean_specs(df):
     return_df=df.copy()
     return_df.columns=return_df.columns.str.replace(" ","_")
-    return_df.columns=return_df.columns.str.replace(".","_")
+    return_df.columns=return_df.columns.str.replace(r'\.', '_', regex=True)
     return_df['Launch_Announced']=pd.to_datetime(return_df['Launch_Announced'])
     return_df.rename(columns={'Launch_Announced':'Release_Date'},inplace=True)   
     columns=['product_id']
