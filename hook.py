@@ -1,7 +1,8 @@
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_insert_into_sql_statement_from_df
 from lookups import InputTypes,ETLStep,DESTINATION_SCHEMA,sql_files
 from datetime import datetime
-# from prehook import return_tables_by_schema, return_lookup_items_as_dict, execute_sql_folder
+import logging
+from datetime import datetime
 import misc_handler
 import cleaning_dfs_handler
 import pandas as pd
@@ -157,36 +158,34 @@ def insert_sales_stg(db_session,driver):
 
 
 def execute_hook(input_text,reddit,sql_command_directory_path = './SQL_Commands'):
-    print("Hook")
-    # reddit=praw.Reddit(
-    #         client_id="A99udy2Ex7RaoBzW5O3Gdw",
-    #         client_secret="jOKXzOzOe9sk-wn-i5a7c4I4zdac4w",
-    #         user_agent="my-tech"
-    #     )
-    
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    logger=logging.getLogger(__name__)
     driver = webdriver.Chrome()
     # options=Options()
     # options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
     db_session = create_connection()
-    step_name=1
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating etl last update table 1")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating etl last update table 1")
+    logger.info("Creating etl_last_date_gsm")
     create_etl_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    step_name=2
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," creating etl last update table 2")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," creating etl last update table 2")
+    logger.info("Creating etl_last_date_reddit")
     create_etl_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    step_name=3
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," returning product url")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," returning product url")
+    logger.info("Returning product URL")
     url=misc_handler.return_url_gsm_search(input_text,driver)
-    step_name=4
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," inserting staging tables")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," inserting staging tables")
+    logger.info("Inserting staging tables")
     insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
     driver.quit()
-    step_name=6
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," execute sql hook commands")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," execute sql hook commands")
+    logger.info("Executing SQL commands")
     execute_hook_sql(db_session, sql_command_directory_path)
-    step_name=6
-    print(datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name,"updating last date")
+    #print(datetime.now().strftime("%I:%M%p on %B %d, %Y"),"updating last date")
+    logger.info("Updating last date review")
     update_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
     update_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
 

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS product_analyzer.fact_sales
 );
 CREATE INDEX IF NOT EXISTS idx_sales_id ON product_analyzer.fact_sales (sales_id);
 
--- INSERT INTO product_analyzer.fact_reviews
+-- INSERT INTO product_analyzer.fact_sales
 --     (brand,sales,year)
 -- SELECT 
 -- 	src_sales.brand,

@@ -124,7 +124,6 @@ def execute_prehook(reddit,sql_command_directory_path = './SQL_Commands'):
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         db_session = create_connection()
-        start_time = datetime.datetime.now()
         step_name=1
         print(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")," step:",step_name," executing prehook sql file")
         execute_prehook_sql(db_session, sql_command_directory_path) 
