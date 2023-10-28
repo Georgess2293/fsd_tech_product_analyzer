@@ -28,6 +28,16 @@ def execute_hook_sql(db_session, sql_command_directory_path):
                 sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
                 execute_query(db_session, sql_query)
 
+def execute_hook_sql_new(db_session, sql_command_directory_path):
+    sql_files =misc_handler.retreive_sql_files(sql_command_directory_path)
+    for sql_file in sql_files:
+        if str(sql_file.split('-')[0].split('_')[1]) == ETLStep.HOOK.value:
+            with open(os.path.join(sql_command_directory_path,sql_file), 'r') as file:
+                sql_query = file.read()
+                sql_query = sql_query.replace('target_schema', DESTINATION_SCHEMA.DESTINATION_NAME.value)
+                execute_query(db_session, sql_query)
+
+
 
 def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all_specs=None,all_reviews=None):
     all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
