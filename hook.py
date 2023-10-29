@@ -29,25 +29,6 @@ def execute_hook_sql(db_session,sql_command_directory_path):
 
 
 
-def insert_specs_gsm_reviews_stg(db_session,reddit,all_reviews_reddit,driver,all_specs=None,all_reviews=None):
-    all_specs,all_reviews=misc_handler.return_stg_specs_exception_df(driver)
-    all_specs=cleaning_dfs_handler.clean_specs(all_specs)
-    all_reviews=cleaning_dfs_handler.clean_reviews_gsm(all_reviews)
-    all_reviews=misc_handler.sentiment_analysis_df(all_reviews)
-    insert_stmt_specs=return_insert_into_sql_statement_from_df(all_specs,'stg_products_specs')
-    insert_stmt_reviews=return_insert_into_sql_statement_from_df(all_reviews,'stg_gsm_reviews')
-    for insert in insert_stmt_specs:
-        execute_query(db_session=db_session,query=insert)
-    for insert in insert_stmt_reviews:
-        execute_query(db_session=db_session,query=insert)
-    all_reviews_reddit=misc_handler.return_all_reddit_df(all_specs,reddit)
-    all_reviews_reddit=cleaning_dfs_handler.clean_reviews_reddit(all_reviews_reddit)
-    all_reviews_reddit=misc_handler.sentiment_analysis_df(all_reviews_reddit)
-    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
-    for insert in insert_stmt_reviews_reddit:
-        execute_query(db_session=db_session,query=insert)
-
-
 def create_etl_last_date_gsm(schema_name , db_session):
     query = f"""
         CREATE TABLE IF NOT EXISTS {schema_name}.etl_last_date_gsm
@@ -142,19 +123,6 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
         execute_query(db_session=db_session,query=insert)
     for insert in insert_stmt_prices:
         execute_query(db_session=db_session,query=insert)
-
-
-def insert_sales_stg(db_session,driver):
-    try:
-        sales_df=misc_handler.return_sales_per_year(driver)
-        sales_df=cleaning_dfs_handler.clean_sales(sales_df)
-        dst_table = f"stg_sales"
-        insert_stmt = return_insert_into_sql_statement_from_df(sales_df, dst_table)
-        for insert in insert_stmt:
-            execute_query(db_session=db_session,query=insert)
-    except Exception as error:
-        print(error)
-
 
 
 def execute_hook(input_text,reddit,sql_command_directory_path = './SQL_Commands'):
