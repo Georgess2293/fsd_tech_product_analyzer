@@ -113,8 +113,8 @@ class staging_tables(Enum):
 class sql_files(Enum):
     Prehook=['V1_prehook_create-schema.sql']
     Hook=['V2_hook_dim-product.sql','V3_hook_fact-reviews.sql','V4_hook_dim-specs.sql','V5_hook_dim-prices.sql','V6_hook_agg-prices.sql',
-          'V7_hook_agg-reviews.sql','V8_hook_vw-avg-prices.sql','V9_hook_vw-reviews-stats.sql','V10_hook_fact-sales.sql','V11_hook_vw-specs-prices.sql',
-          'V12_hook_vw-reviews-sales.sql']
+          'V7_hook_agg-reviews.sql','V8_hook_vw-avg-prices.sql','V9_hook_vw-reviews-stats.sql','V10_hook_vw-specs-prices.sql',
+          'V11_hook_vw-reviews-sales.sql']
 
 
 
