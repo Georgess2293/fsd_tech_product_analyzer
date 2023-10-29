@@ -82,12 +82,9 @@
 
   
 
-| Map screen | Dashboard screen | Bin Management screen |
 
-| ---| ---| ---|
 
-| ![Map](readme/mockups/web/map.png)| ![Map](./readme/mockups/web/dashboard.png)| ![Map](./readme/mockups/web/bin_crud.png)|
-
+| ![Map](./readme/flow_diagram_fsd.png)| 
   
   
 
@@ -234,6 +231,18 @@ pip install -r requirements.txt
 ```
 
 -   Install database connectors/drivers for PostgreSQL.
+
+- Create a free reddit app and pass it as an input to the etl as follows:
+
+```sh
+
+reddit=praw.Reddit(
+            client_id="Your_client_id",
+            client_secret="Your_client_secret",
+            user_agent="Your_user_agent"
+        )
+
+```
   
 
 ### **Setting Up the Environment**:
