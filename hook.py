@@ -1,12 +1,12 @@
 from database_handler import execute_query, create_connection, close_connection,return_data_as_df, return_insert_into_sql_statement_from_df
-from lookups import InputTypes,ETLStep,DESTINATION_SCHEMA,sql_files
+from lookups import InputTypes,DESTINATION_SCHEMA,sql_files,ErrorHandling
 from datetime import datetime
 import logging
+from logging_handler import show_error_message
 from datetime import datetime
 import misc_handler
 import cleaning_dfs_handler
 import pandas as pd
-import praw
 import os
 from time import sleep
 from selenium import webdriver
@@ -126,31 +126,37 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
 
 
 def execute_hook(input_text,reddit,sql_command_directory_path = './SQL_Commands'):
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
-    logger=logging.getLogger(__name__)
-    #driver = webdriver.Chrome()
-    options=Options()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
-    db_session = create_connection()
-    logger.info("Creating etl_last_date_gsm")
-    create_etl_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    logger.info("Creating etl_last_date_reddit")
-    create_etl_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    logger.info("Returning product URL")
-    url=misc_handler.return_url_gsm_search(input_text,driver)
-    logger.info("Inserting staging tables")
-    insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
-    driver.quit()
-    logger.info("Executing SQL commands")
-    execute_hook_sql(db_session, sql_command_directory_path)
-    logger.info("Updating last date review")
-    update_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    update_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
-    close_connection(db_session)
-    logger.info("Hook Success")
+    try:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+        logger=logging.getLogger(__name__)
+        #driver = webdriver.Chrome()
+        options=Options()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        db_session = create_connection()
+        logger.info("Creating etl_last_date_gsm")
+        create_etl_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+        logger.info("Creating etl_last_date_reddit")
+        create_etl_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+        logger.info("Returning product URL")
+        url=misc_handler.return_url_gsm_search(input_text,driver)
+        logger.info("Inserting staging tables")
+        insert_into_stg(db_session,driver,url,reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value)
+        driver.quit()
+        logger.info("Executing SQL commands")
+        execute_hook_sql(db_session, sql_command_directory_path)
+        logger.info("Updating last date review")
+        update_last_date_gsm(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+        update_last_date_reddit(DESTINATION_SCHEMA.DESTINATION_NAME.value,db_session)
+        close_connection(db_session)
+        logger.info("Hook Success")
+    except Exception as error:
+        suffix = str(error)
+        error_prefix = ErrorHandling.HOOK_SQL_ERROR
+        show_error_message(error_prefix.value, suffix)
+        raise Exception(f"Important Step Failed step")
     
     
