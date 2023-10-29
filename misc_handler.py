@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import praw
-from lookups import brands_url,page_limit,product_url,sales_url,staging_tables
+from lookups import staging_tables
 from time import sleep
 from datetime import datetime
 import pandas as pd
