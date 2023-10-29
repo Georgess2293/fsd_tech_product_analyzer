@@ -138,7 +138,7 @@ A central dashboard where viewers can check:
 <a  name="Demo"  ></a>
 <img  src="./readme/title5.svg" id="#demo"/>
 
-> Show command line of ETL performance - Logger view
+
 
   
 ### App
