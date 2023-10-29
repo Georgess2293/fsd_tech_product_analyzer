@@ -257,7 +257,7 @@ git clone https://github.com/Georgess2293/fsd_tech_product_analyzer.git
 ### **Running the Backend**:
 
 **Start the Data Ingestion & ETL Process**:
-`python data_ingestion_script.py`
+`python main.py`
 
 
 As for the dashboard access: Please use this link "public powerbi link" to access your data.
