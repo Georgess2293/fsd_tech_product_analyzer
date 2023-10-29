@@ -19,8 +19,6 @@ def clean_reviews_reddit(df):
         return_df.pop(return_df.columns[0])
     return_df.columns=return_df.columns.str.replace(" ","_")
     return_df['Date']=pd.to_datetime(return_df['Date'])
-    # columns=['product_id']
-    # return_df[columns]=return_df[columns].astype('int64')
     return return_df
 
 
@@ -61,11 +59,6 @@ def clean_prices(df):
     all_prices.columns=all_prices.columns.str.replace(" ","_")
     columns=['product_id']
     all_prices[columns]=all_prices[columns].astype('int64')
-    # all_prices.columns=['product_id', '_128GB_8GB_RAM', '_128GB_6GB_RAM', '_256GB_8GB_RAM',
-    #    '_128GB_12GB_RAM', '_512GB_16GB_RAM', '_256GB_12GB_RAM', '_32GB_3GB_RAM',
-    #    '_64GB_4GB_RAM', '_128GB_4GB_RAM', '_512GB_12GB_RAM', '_64GB_6GB_RAM',
-    #    '_256GB_6GB_RAM', '_512GB_6GB_RAM', '_256GB_4GB_RAM', '_512GB_4GB_RAM',
-    #    '_512GB_8GB_RAM']
     new_column_names = ['_' + col if col != 'product_id' else col for col in all_prices.columns]
     all_prices.columns = new_column_names
 
