@@ -155,7 +155,7 @@ A central dashboard where viewers can check:
 
 | Overview |
 | -----------------|
-|![Log](./readme/overview.png) |
+|![Log](./readme/overview.gif) |
 
 | Reviews vs Specs |
 | -----------------|
@@ -163,7 +163,7 @@ A central dashboard where viewers can check:
 
 | Comparison |
 | -----------------|
-|![Log](./readme/comparison.png) |
+|![Log](./readme/comparison.gif) |
 
 | Demo|
 | -----------------|
