@@ -115,7 +115,7 @@
 <!-- Tech stacks -->
 
 <a  name="stacks"></a>
-<img  src="./readme/title5.svg" id="stacks" />
+<img  src="./readme/title4.svg" id="stacks" />
 
 <br>
 
@@ -146,7 +146,7 @@
 <!-- Implementation -->
 
 <a  name="Demo"  ></a>
-<img  src="./readme/title4.svg" id="#demo"/>
+<img  src="./readme/title5.svg" id="#demo"/>
 
 <br>
 
