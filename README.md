@@ -169,6 +169,10 @@ A central dashboard where viewers can check:
 | -----------------|
 
   
+
+https://github.com/Georgess2293/tech_product_analyzer/assets/128224331/14a896cc-3e68-4853-b9cb-b79b99d49918
+
+
   
 
 <br><br>
