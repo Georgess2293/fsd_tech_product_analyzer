@@ -92,7 +92,19 @@
   
 | Landing Page |
 | -----------------|
-|![Log](./readme/flow_diagram_fsd.png) |
+|![Log](./readme/landing_page.png) |
+
+| Overview |
+| -----------------|
+|![Log](./readme/overview.png) |
+
+| Reviews vs Specs |
+| -----------------|
+|![Log](./readme/Reviews_specs.png) |
+
+| Comparison |
+| -----------------|
+|![Log](./readme/comparison.png) |
   
   
 
