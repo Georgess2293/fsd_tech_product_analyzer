@@ -115,7 +115,38 @@
 <!-- Tech stacks -->
 
 <a  name="stacks"></a>
-<img  src="./readme/title4.svg" id="stacks" />
+<img  src="./readme/title5.svg" id="stacks" />
+
+<br>
+
+  
+
+
+  
+
+## Stacks List
+
+
+1. PostgreSQL: Utilized for relational databases to store and manage the project's data effectively.
+2. Python and pandas: Employed for the ETL process to ingest and manipulate data efficiently. 
+3. Logger : Implements logging to monitor and track the system's performance and activities.
+4. Github: Utilized for managing and tracking changes in the project ensuring version control
+
+
+  
+
+<br>
+
+
+
+<br>
+
+  
+
+<!-- Implementation -->
+
+<a  name="Demo"  ></a>
+<img  src="./readme/title4.svg" id="#demo"/>
 
 <br>
 
@@ -153,70 +184,6 @@ A central dashboard where viewers can check:
 
   
 
-<!-- Implementation -->
-
-<a  name="Demo"  ></a>
-<img  src="./readme/title5.svg" id="#demo"/>
-
-
-
-  
-### App
-
-
-| Dashboard Screen | Create Bin Screen |
-
-| ---| ---|
-
-| ![Landing](./readme/implementation/dashboard.gif) | ![fsdaf](./readme/implementation/create_bin.gif) |
-
-  
-
-| Bins to Map Screen |
-
-| ---|
-
-| ![fsdaf](./readme/implementation/map.gif) |
-
-  
-  
-
-| Filter Bins Screen | Update Pickup Time Screen |
-
-| ---| ---|
-
-| ![Landing](./readme/implementation/filter_bins.gif) | ![fsdaf](./readme/implementation/update_pickup.gif) |
-
-  
-  
-
-| Announcements Screen |
-
-| ---|
-
-| ![fsdaf](./readme/implementation/message.gif)|
-
-  
-  
-
-| Change Map Screen | Edit Profile Screen |
-
-| ---| ---|
-
-| ![Landing](./readme/implementation/change_map.gif) | ![fsdaf](./readme/implementation/edit_profile.gif) |
-
-  
-  
-
-| Landing Screen |
-
-| ---|
-
-| ![fsdaf](./readme/implementation/landing.gif)|
-
-  
-
-<br><br>
 
 
 
@@ -289,4 +256,3 @@ git clone https://github.com/Georgess2293/fsd_tech_product_analyzer.git
 `python main.py`
 
 
-As for the dashboard access: Please use this link "public powerbi link" to access your data.
