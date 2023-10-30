@@ -70,10 +70,9 @@
   
 
 
-
-
-
- ![Landing](./readme/etl_logger.png) 
+| app.log |
+| -----------------|
+|![Log](./readme/etl_logger.png) |
 
   
   
@@ -83,8 +82,17 @@
   
 
 
+| Data Flow Diagram |
+| -----------------|
+|![Log](./readme/flow_diagram_fsd.png) |
 
-| ![Map](./readme/flow_diagram_fsd.png)| 
+
+### PowerBi Dashboard
+
+  
+| Landing Page |
+| -----------------|
+|![Log](./readme/flow_diagram_fsd.png) |
   
   
 
