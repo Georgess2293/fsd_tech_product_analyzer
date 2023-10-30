@@ -87,28 +87,8 @@
 |![Log](./readme/flow_diagram_fsd.png) |
 
 
-### PowerBi Dashboard
-
-  
-| Landing Page |
-| -----------------|
-|![Log](./readme/landing_page.png) |
-
-| Overview |
-| -----------------|
-|![Log](./readme/overview.png) |
-
-| Reviews vs Specs |
-| -----------------|
-|![Log](./readme/Reviews_specs.png) |
-
-| Comparison |
-| -----------------|
-|![Log](./readme/comparison.png) |
-  
-  
-
-<br><br>
+<br>
+<br>
 
   
 
@@ -119,36 +99,7 @@
 
 <br>
 
-  
 
-
-  
-
-## Stacks List
-
-
-1. PostgreSQL: Utilized for relational databases to store and manage the project's data effectively.
-2. Python and pandas: Employed for the ETL process to ingest and manipulate data efficiently. 
-3. Logger : Implements logging to monitor and track the system's performance and activities.
-4. Github: Utilized for managing and tracking changes in the project ensuring version control
-
-
-  
-
-<br>
-
-
-
-<br>
-
-  
-
-<!-- Implementation -->
-
-<a  name="Demo"  ></a>
-<img  src="./readme/title5.svg" id="#demo"/>
-
-<br>
 
   
 
@@ -182,6 +133,41 @@ A central dashboard where viewers can check:
 
 <br>
 
+  
+
+<!-- Implementation -->
+
+<a  name="Demo"  ></a>
+<img  src="./readme/title5.svg" id="#demo"/>
+
+<br>
+
+  
+
+
+  
+### PowerBi Dashboard
+
+  
+| Landing Page |
+| -----------------|
+|![Log](./readme/landing_page.png) |
+
+| Overview |
+| -----------------|
+|![Log](./readme/overview.png) |
+
+| Reviews vs Specs |
+| -----------------|
+|![Log](./readme/Reviews_specs.png) |
+
+| Comparison |
+| -----------------|
+|![Log](./readme/comparison.png) |
+  
+  
+
+<br><br>
   
 
 
