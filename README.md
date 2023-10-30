@@ -256,5 +256,5 @@ git clone https://github.com/Georgess2293/fsd_tech_product_analyzer.git
 `python main.py`
 
 
-As for the dashboard access: Please use this link ["public powerbi link"](https://app.powerbi.com/view?r=eyJrIjoiN2MzYjdmMzAtMjA4Ni00N2Q4LTg0ZjAtOWE3MDg3MTA3OTgyIiwidCI6IjJhZDk2OTM0LTQzZTUtNDFjMi05NzYxLWYzMzVmZTIxNGNjMyIsImMiOjl9) to access your data
+As for the dashboard access: Please use this link ["public powerbi link"](https://app.powerbi.com/view?r=eyJrIjoiZWU0OGU4MTgtMzlmMi00NzA5LWI4YWYtN2QzNWQ4ZjBjNDcxIiwidCI6IjJhZDk2OTM0LTQzZTUtNDFjMi05NzYxLWYzMzVmZTIxNGNjMyIsImMiOjl9) to access your data
 
