@@ -66,7 +66,7 @@ def update_last_date_gsm(schema_name,db_session):
         SELECT
             product_id,
             MAX(stg.date) AS max_date
-        FROM product_analyzer.stg_gsm_reviews1 AS stg
+        FROM product_analyzer.stg_gsm_reviews AS stg
         GROUP BY stg.product_id
         ON CONFLICT (product_id)
         DO UPDATE SET
@@ -81,7 +81,7 @@ def update_last_date_reddit(schema_name,db_session):
         SELECT
             product_id,
             MAX(stg.date) AS max_date
-        FROM product_analyzer.stg_reddit_reviews1 AS stg
+        FROM product_analyzer.stg_reddit_reviews AS stg
         GROUP BY stg.product_id
         ON CONFLICT (product_id)
         DO UPDATE SET
@@ -111,10 +111,10 @@ def insert_into_stg(db_session,driver,url,reddit,schema_name):
     prices_df=misc_handler.return_prices_df(url,driver)
     prices_df=cleaning_dfs_handler.clean_prices(prices_df)
     prices_df=misc_handler.convert_currency_df(prices_df)
-    insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs1')
-    insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews1')
-    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews1')
-    insert_stmt_prices=return_insert_into_sql_statement_from_df(prices_df,'stg_products_prices1')
+    insert_stmt_specs=return_insert_into_sql_statement_from_df(specs_df,'stg_products_specs')
+    insert_stmt_reviews=return_insert_into_sql_statement_from_df(reviews_gsm_df,'stg_gsm_reviews')
+    insert_stmt_reviews_reddit=return_insert_into_sql_statement_from_df(all_reviews_reddit,'stg_reddit_reviews')
+    insert_stmt_prices=return_insert_into_sql_statement_from_df(prices_df,'stg_products_prices')
     for insert in insert_stmt_specs:
         execute_query(db_session=db_session,query=insert)
     for insert in insert_stmt_reviews:

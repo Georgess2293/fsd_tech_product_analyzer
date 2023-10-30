@@ -59,7 +59,7 @@ SELECT
     _256gb_4gb_ram,
     _512gb_4gb_ram,
     _512gb_8gb_ram
-FROM product_analyzer.stg_products_prices1 src_prices
+FROM product_analyzer.stg_products_prices src_prices
 ON CONFLICT (product_id)
 DO UPDATE SET
     _128gb_8gb_ram=excluded._128gb_8gb_ram,

@@ -41,10 +41,10 @@ class first_time(Enum):
 
 
 class staging_tables(Enum):
-    Products_Specs='stg_products_specs1'
-    Products_Prices='stg_products_prices1'
-    GSM_Reviews='stg_gsm_reviews1'
-    Reddit_Reviews='stg_reddit_reviews1'
+    Products_Specs='stg_products_specs'
+    Products_Prices='stg_products_prices'
+    GSM_Reviews='stg_gsm_reviews'
+    Reddit_Reviews='stg_reddit_reviews'
 
 class sql_files(Enum):
     Prehook=['V1_prehook_create-schema.sql']

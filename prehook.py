@@ -36,7 +36,7 @@ def create_sql_staging_tables_reddit(db_session, driver,reddit):
         staging_reddit=clean_reviews_reddit(staging_reddit)
         staging_reddit=misc_handler.sentiment_analysis_df(staging_reddit)
         staging_reddit.insert(2,'product_id',1)
-        dst_table = f"stg_reddit_reviews1"
+        dst_table = f"stg_reddit_reviews"
         create_stmt = return_create_statement_from_df(staging_reddit,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
     except Exception as error:
@@ -49,7 +49,7 @@ def create_sql_staging_tables_gsm_reviews(db_session, driver):
         staging_gsm_reviews=pd.DataFrame(staging_gsm_reviews)
         staging_gsm_reviews=clean_reviews_gsm(staging_gsm_reviews)
         staging_gsm_reviews=misc_handler.sentiment_analysis_df(staging_gsm_reviews)
-        dst_table = f"stg_gsm_reviews1"
+        dst_table = f"stg_gsm_reviews"
         create_stmt = return_create_statement_from_df(staging_gsm_reviews,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
     except Exception as error:
@@ -65,7 +65,7 @@ def create_sql_staging_tables_specs(db_session, driver):
                 'Misc_Colors','Misc_Models','Misc_SAR','Main Camera_Quad','Misc_SAR EU','Main Camera_Dual','Comms_Infrared port','Misc_Price','Selfie camera_Dual','Main Camera_Single']
         staging_specs = pd.DataFrame(columns=columns)
         staging_specs=clean_specs(staging_specs)
-        dst_table = f"stg_products_specs1"
+        dst_table = f"stg_products_specs"
         create_stmt = return_create_statement_from_df(staging_specs,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
     except Exception as error:
@@ -87,7 +87,7 @@ def create_sql_staging_tables_prices(db_session, driver):
         staging_prices[columns_float]=staging_prices[columns_float].astype('float64')
         col=['product_id']
         staging_prices[col]=staging_prices[col].astype('int64')
-        dst_table = f"stg_products_prices1"
+        dst_table = f"stg_products_prices"
         create_stmt = return_create_statement_from_df(staging_prices,DESTINATION_SCHEMA.DESTINATION_NAME.value, dst_table)
         execute_query(db_session=db_session, query= create_stmt)
     except Exception as error:
