@@ -41,19 +41,19 @@
 
   
 1. As a Data Engineer:<br>
-	I want to automatically scrape various and new released products from reputable sources with the latest reviews so that our dataset is always up-to-date. <br>
-	I want to integrate different data sources seamlessly.<br>
-	I want to ensure there is fault tolerance in our data pipelines, so that potential failures don't interrupt our analyses.
+	- I want to automatically scrape various and new released products from reputable sources with the latest - reviews so that our dataset is always up-to-date. <br>
+	- I want to integrate different data sources seamlessly.<br>
+	- I want to ensure there is fault tolerance in our data pipelines, so that potential failures don't interrupt our analyses.
 2. As an Analyst: <br>
-	I want to query the database.<br>
-	I want to view the sentiment analysis results to understand users sentiment about different brands and products.<br>
-	I want to visualize the data using PowerBI.
+	- I want to query the database.<br>
+	- I want to view the sentiment analysis results to understand users sentiment about different brands and products.<br>
+	- I want to visualize the data using PowerBI.
 3. As a Tech Influencer:<br>
-	I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.<br>
-	I want to be able to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.<br>
+	- I want to access detailed and up-to-date information about the latest tech products, with a particular focus on smartphones.<br>
+	- I want to be able to track trends and user sentiments, enabling me to create relevant and engaging content for my audience.<br>
 4. As a Smartphone Shop Owner:<br>
-	I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies.<br>
-	I want to track product performance and customer reviews to ensure that the products I offer align with market demands.
+	- I want insights into customer preferences and trending smartphone models to inform my inventory management and marketing strategies.<br>
+	- I want to track product performance and customer reviews to ensure that the products I offer align with market demands.
 
 
 <br><br>
