@@ -113,8 +113,8 @@ A central dashboard where viewers can check:
 
 1. Market Indicator: Graphs, charts and visualizations displaying yearly sales of manufacturers.
 2. Sentiment Analysis: Representations of consumers sentiment about different products over time through pie charts and bars.
-3. Specs analysis: Display correlation between the specs and the reviews.
-4. Interactive filters: options to filter data by date, brand, or product for customized views.
+3. Specs Analysis: Display correlation between the specs and the reviews.
+4. Interactive Filters: options to filter data by date, brand, or product for customized views.
 
 
   
@@ -196,8 +196,8 @@ https://github.com/Georgess2293/tech_product_analyzer/assets/128224331/14a896cc-
 **Hardware & Software**:
 
 -   A computer/server with sufficient RAM and processing power.
--   Operating system: Linux (preferred for production) or Windows.
--   Required software: Python (3.x), PostgreSQL, Git (for version control), and any other specific software packages.
+-   Operating System: Linux (preferred for production) or Windows.
+-   Required Software: Python (3.x), PostgreSQL, Git (for version control), and any other specific software packages.
   
   
 
